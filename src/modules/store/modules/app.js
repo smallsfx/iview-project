@@ -23,27 +23,40 @@ const app = {
         setTagsList(state, list) {
             state.tagsList.push(...list);
         },
+        // 更新菜单列表
         updateMenulist(state) {
-            let accessCode = parseInt(localStorage.access);
+            let permissions = [];
+            if (localStorage.permission) {
+                permissions = JSON.parse(localStorage.permission);
+            }
             let menuList = [];
+            const _find_children = (item) => {
+                return item.children.filter(child => {
+                    if (child.display === undefined || child.display === true) {
+                        if (child.permission === undefined) {
+                            if (permissions.length === 0 || permissions.indexOf(child.name) > -1) {
+                                return child;
+                            }
+                        } else {
+                            return child;
+                        }
+                    }
+                });
+            }
             appRouter.forEach((item, index) => {
-                if (item.access !== undefined) {
-                    if (Util.showThisRoute(item.access, accessCode)) {
+                if (item.permission === undefined) {
+                    if (permissions.length === 0 || permissions.indexOf(item.name) > -1) {
                         if (item.children.length === 1) {
                             menuList.push(item);
                         } else {
                             let len = menuList.push(item);
-                            let childrenArr = [];
-                            childrenArr = item.children.filter(child => {
-                                if (child.access !== undefined) {
-                                    if (child.access === accessCode) {
-                                        return child;
-                                    }
-                                } else {
-                                    return child;
-                                }
-                            });
-                            menuList[len - 1].children = childrenArr;
+                            menuList[len - 1].children = _find_children(item);
+                        }
+                    } else if (item.children.length > 0) {
+                        let childrenArr = _find_children(item);
+                        if (childrenArr.length > 0) {
+                            item.children = childrenArr;
+                            menuList.push(item);
                         }
                     }
                 } else {
@@ -51,16 +64,7 @@ const app = {
                         menuList.push(item);
                     } else {
                         let len = menuList.push(item);
-                        let childrenArr = [];
-                        childrenArr = item.children.filter(child => {
-                            if (child.access !== undefined) {
-                                if (Util.showThisRoute(child.access, accessCode)) {
-                                    return child;
-                                }
-                            } else {
-                                return child;
-                            }
-                        });
+                        let childrenArr = _find_children(item);
                         if (childrenArr === undefined || childrenArr.length === 0) {
                             menuList.splice(len - 1, 1);
                         } else {

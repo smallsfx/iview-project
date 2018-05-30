@@ -26,20 +26,17 @@ const user = {
 
         setSecurity (state, data){
             state.security = data||{};
-            // localStorage.userInfo = JSON.stringify(state.userInfo);
             localStorage.token = state.security.accessToken;
             localStorage.security = JSON.stringify(state.security);
         },
 
         setUserInfo (state ,data){
-            state.permission = data.permissions;
             state.info = {
                 nickName : data.nickName,
                 roleName : data.roleName,
                 mobile : data.mobile
             };
-            // localStorage.userInfo = JSON.stringify(state.userInfo);
-            localStorage.permission = JSON.stringify(state.permission);
+            localStorage.permission = JSON.stringify(data.permissions);
         }
 
     }

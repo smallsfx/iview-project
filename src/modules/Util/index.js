@@ -18,6 +18,8 @@ import {
   fullscreenEvent
 } from './modules/other';
 
+import dict from "./modules/dict";
+
 const Util = {
   title,
   inOf,
@@ -35,7 +37,8 @@ const Util = {
   dateformat,
 
   md5: MD5,
-  parseURL: URL
+  parseURL: URL,
+  dict2array: dict
 }
 
 export default Util;

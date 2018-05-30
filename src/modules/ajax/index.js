@@ -1,13 +1,19 @@
 import axios from 'axios';
 import iView from 'iview';
 
+import Config from '@/config/config';
+
+// axios.install = (Vue) => {
+//     Vue.prototype.$axios = axios
+// }
+
 export default {
     lastRequest : {},
     init :function (App) {
         let self = this;
         this.Vue = App;
         axios.defaults.timeout = 5000;
-        axios.defaults.baseURL = 'http://localhost:8080/';
+        axios.defaults.baseURL = Config.Server;
     
         axios.interceptors.request.use(
             config => {
@@ -22,33 +28,35 @@ export default {
                     }
                     return ret;
                 }];
+                console.debug(`开始请求: ${config.url}`);
                 return config;
             },
             err => {
+                console.debug(`请求失败`);
                 return Promise.reject(err);
             }
         );
     
         axios.interceptors.response.use(
             response => {
+                console.debug(`接收响应：${JSON.stringify(response.data)}`);
                 if (response.data && response.data.ret === 0) {
                     iView.LoadingBar.finish();
                     return response.data;
                 } else if (response.data.ret === 10001) {
                     App.$Message.info('TOKEN认证失败，请重新登录');
-                    // 退出登录
                     App.$store.commit('logout', this);
                     App.$store.commit('clearOpenedSubmenu');
                     App.$router.push({ name: 'login' });
                 } else if (response.data.ret === 10002) {
-                    // let security = JSON.parse(localStorage.security);
+                    console.debug(`TOKEN已过期，请求刷新TOKEN`);
                     let args = {
-                        // refresh_token: security.refreshToken
                         refresh_token : App.$store.state.refreshToken
                     };
                     self.post('api/user/refresh', args, function (response) {
                         if (!response) { return; }
-                        let data = response.data.data;
+                        console.debug(`TOKEN刷新成功`);
+                        let data = response.data;
                         App.$store.commit('setSecurity', data);
                         if (self.lastRequest) {
                             switch (self.lastRequest.method) {
@@ -67,7 +75,6 @@ export default {
                             }
                         }
                     });
-                    return undefined;
                 } else if(response.data.ret === 10004){
                     App.$store.commit('logout', this);
                     App.$store.commit('clearOpenedSubmenu');
@@ -80,15 +87,15 @@ export default {
                             text += '\r\n\t   ' + response.data.data[property];
                         };
                     }
-    
                     App.$Message.info(text);
                 }
             },
     
             error => {
+                console.debug(`响应异常：${JSON.stringify(error)}`)
                 iView.LoadingBar.error();
                 if (error.message === 'Network Error') {
-                    App.$Message.error('请求失败\r\n请检查网络情况');
+                    App.$Message.error('请求失败，请检查网络情况');
                 } else if (error.message) {
                     App.$Message.error(error.message);
                 } else {

@@ -1,6 +1,7 @@
 {
   "name": "qdp.console",
   "version": "0.0.1",
+  "title": "花生VR - 管理平台",
   "description": "Vue 2.0 admin management system template based on iView",
   "main": "index.js",
   "scripts": {

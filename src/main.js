@@ -10,6 +10,10 @@ import VueI18n from 'vue-i18n';
 import Axios from './modules/ajax/index';
 import './modules/permission/index';
 
+import Config from '@/config/config';
+
+console.info(JSON.stringify(Config));
+
 Vue.use(VueI18n);
 Vue.use(iView);
 

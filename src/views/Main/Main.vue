@@ -26,10 +26,10 @@
           </div>
         </div>
         <div class="header-avator-con">
-          <full-screen v-model="isFullScreen" @on-change="fullscreenChange"></full-screen>
-          <lock-screen></lock-screen>
+          <!-- <full-screen v-model="isFullScreen" @on-change="fullscreenChange"></full-screen> -->
+          <!-- <lock-screen></lock-screen>
           <message-tip v-model="mesCount"></message-tip>
-          <theme-switch></theme-switch>
+          <theme-switch></theme-switch> -->
 
           <div class="user-dropdown-menu-con">
             <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
@@ -43,7 +43,7 @@
                   <DropdownItem name="loginout" divided>退出登录</DropdownItem>
                 </DropdownMenu>
               </Dropdown>
-              <Avatar :src="avatorPath" style="background: #619fe7;margin-left: 10px;"></Avatar>
+              <!-- <Avatar :src="avatorPath" style="background: #619fe7;margin-left: 10px;"></Avatar> -->
             </Row>
           </div>
         </div>
@@ -103,9 +103,9 @@ export default {
     currentPath() {
       return this.$store.state.app.currentPath; // 当前面包屑数组
     },
-    avatorPath() {
-      return localStorage.avatorImgPath;
-    },
+    // avatorPath() {
+    //   return localStorage.avatorImgPath;
+    // },
     cachePage() {
       return this.$store.state.app.cachePage;
     },
@@ -121,12 +121,6 @@ export default {
   },
   methods: {
     init() {
-      let pathArr = util.setCurrentPath(this, this.$route.name);
-      this.$store.commit("updateMenulist");
-      if (pathArr.length >= 2) {
-        this.$store.commit("addOpenSubmenu", pathArr[1].name);
-      }
-
       this.$root.$axios.post("api/user/permission", {}, response => {
         if (!response) {
           return;
@@ -140,6 +134,12 @@ export default {
         this.messageCount = messageCount.toString();
         this.checkTag(this.$route.name);
         this.$store.commit("setMessageCount", 3);
+
+        let pathArr = util.setCurrentPath(this, this.$route.name);
+        this.$store.commit("updateMenulist");
+        if (pathArr.length >= 2) {
+          this.$store.commit("addOpenSubmenu", pathArr[1].name);
+        }
       });
     },
     toggleClick() {
@@ -189,7 +189,9 @@ export default {
       // console.log(isFullScreen);
     },
     scrollBarResize() {
-      this.$refs.scrollBar.resize();
+      if( this.$refs.scrollBar){
+        this.$refs.scrollBar.resize();
+      }
     }
   },
   watch: {

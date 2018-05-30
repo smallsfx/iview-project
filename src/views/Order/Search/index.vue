@@ -1,6 +1,6 @@
 <style lang="less">
-@import '../../styles/common.less';
-@import './search.less';
+@import '../../../styles/common.less';
+@import './index.less';
 </style>
 
 <template>
@@ -25,7 +25,7 @@
 
 <script>
 
-import Util from '../../modules/Util/index';
+import Util from '../../../modules/Util/index';
 const OrderStatus = {
     '0': '已关闭',
     '1': '未支付',

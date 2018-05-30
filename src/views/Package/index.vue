@@ -1,22 +1,11 @@
 <style lang="less">
-@import "../../../styles/common.less";
+@import "../../styles/common.less";
 </style>
 
 <template>
   <div>
-    <Row>
-      <span @click="handleSearch" style="margin: 0 10px;">
-        <Button type="primary" icon="search">搜索</Button>
-      </span>
-      <Button @click="handleCancel" type="ghost">取消</Button>
-    </Row>
     <Row class="margin-top-10">
-      <span @click="handleCreate" style="margin: 0 10px;">
-        <Button type="primary" icon="search">新增</Button>
-      </span>
-    </Row>
-    <Row class="margin-top-10">
-      <Table :loading="loading" ref="selection" :columns="columns" :data="data"></Table>
+      <Table border :loading="loading" ref="selection" :columns="columns" :data="data"></Table>
     </Row>
     <Footer>
       <Page :total="recordCount" :page-size="pageSize" show-sizer show-elevator show-total @on-change="handlePageChange" @on-page-size-change="handleSizeChange"></Page>
@@ -25,45 +14,36 @@
 </template>
 
 <script>
-import Util from "../../../modules/Util/index";
+import util from "../../modules/Util/index";
 
-const columns = [
+const CONST_API = {
+  QUERY: "api/package/query"
+};
+const CONST_COLUMNS = [
   {
     type: "selection",
     width: 60,
     align: "center"
   },
-  { key: "serviceFlag", title: "订单编号", width: 125 },
-  { key: "threadId", title: "线程", width: 80 },
-
-  {
-    key: "content",
-    title: "日志内容",
-    width: 300,
-    ellipsis: true
-  },
-  { key: "operator", title: "操作员账号", width: 150 },
-  {
-    key: "createTime",
-    title: "操作时间",
-    width: 150,
-    render: function(h, params) {
-      return h(
-        "div",
-        Util.utcToString(this.row.createTime / 1000, "yyyy-MM-dd hh:mm:ss")
-      );
-    }
-  },
-  { key: "ipAddress", title: "登录IP", width: 150 },
-  { key: "remark", title: "附加信息", width: 150, ellipsis: true }
+  { key: "id", title: "编码", width: 80 },
+  { key: "name", title: "名称"},
+  { key: "desc", title: "描述"}
 ];
 
+const CONST_FILTER = (() => {
+  return {
+    serviceFlag: "", //服务节点标志
+  };
+})();
+
 export default {
-  name: "system-role-search",
+  name: "package-search",
   data() {
     return {
       loading: false,
-      columns: columns,
+      filter: CONST_FILTER,
+      columns: CONST_COLUMNS,
+      data: [],
       pageCount: 0,
       recordCount: 0,
       pageSize: 10,
@@ -95,9 +75,8 @@ export default {
           }
         });
       }
-      this.$root.$axios.get("api/system/log/query", option, function revole(
-        response
-      ) {
+
+      this.$root.$axios.get(CONST_API.QUERY, option, response => {
         self.loading = false;
         if (response === undefined) {
           return;
@@ -111,6 +90,7 @@ export default {
     },
 
     handleCancel() {
+      this.filter = CONST_FILTER;
       this.search();
     },
 
@@ -123,10 +103,6 @@ export default {
         return;
       }
       this.search(this.filter, 1, size);
-    },
-
-    handleCreate() {
-      this.$router.push({ name: "role-create" });
     }
   },
   mounted() {

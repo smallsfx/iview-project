@@ -25,7 +25,7 @@
                         </Col>
                     </Row>
                     <div class="line-gray"></div>
-                    <Row class="margin-top-8">
+                    <!-- <Row class="margin-top-8">
                         <Col span="8">
                         <p class="notwrap">上次登录时间:</p>
                         </Col>
@@ -36,11 +36,11 @@
                         <p class="notwrap">上次登录地点:</p>
                         </Col>
                         <Col span="16" class="padding-left-8">北京</Col>
-                    </Row>
+                    </Row> -->
                 </Card>
                 </Col>
                 <Col :md="12" :lg="24" :style="{marginBottom: '10px'}">
-                <Card>
+                <!-- <Card>
                     <p slot="title" class="card-title">
                         <Icon type="android-checkbox-outline"></Icon>
                         待办事项
@@ -62,12 +62,12 @@
                             <to-do-list-item :content="item.title"></to-do-list-item>
                         </div>
                     </div>
-                </Card>
+                </Card> -->
                 </Col>
             </Row>
             </Col>
             <Col :md="24" :lg="16">
-            <Row :gutter="5">
+            <!-- <Row :gutter="5">
                 <Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
                 <infor-card id-name="user_created_count" :end-val="count.createUser" iconType="android-person-add" color="#2d8cf0" intro-text="今日新增用户"></infor-card>
                 </Col>
@@ -80,8 +80,8 @@
                 <Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
                 <infor-card id-name="transfer_count" :end-val="count.transfer" iconType="shuffle" color="#f25e43" intro-text="今日服务调用量"></infor-card>
                 </Col>
-            </Row>
-            <Row>
+            </Row> -->
+            <!-- <Row>
                 <Card :padding="0">
                     <p slot="title" class="card-title">
                         <Icon type="map"></Icon>
@@ -98,10 +98,10 @@
                         </Col>
                     </div>
                 </Card>
-            </Row>
+            </Row> -->
             </Col>
         </Row>
-        <Row :gutter="10" class="margin-top-10">
+        <!-- <Row :gutter="10" class="margin-top-10">
             <Col :md="24" :lg="8" :style="{marginBottom: '10px'}">
             <Card>
                 <p slot="title" class="card-title">
@@ -146,7 +146,7 @@
                     <service-requests></service-requests>
                 </div>
             </Card>
-        </Row>
+        </Row> -->
     </div>
 </template>
 
