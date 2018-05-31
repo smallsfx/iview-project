@@ -1,6 +1,6 @@
 <template>
   <Card>
-    <p slot="title">The standard card</p>
+    <p slot="title">新增客户白名单</p>
     <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
       <FormItem label="名称" prop="name">
         <Input v-model="formValidate.name" placeholder="输入白名单客户名称"></Input>
@@ -38,6 +38,7 @@
   </Card>
 </template>
 <script>
+import Config from '@/config/config'
 export default {
   data() {
     return {
@@ -69,7 +70,7 @@ export default {
   },
   created(){
     let self = this;
-    this.$root.$axios.get('api/package/query', {}, response => {
+    this.$root.$axios.get(Config.api.package.query, {}, response => {
       if (response === undefined) {
         return;
       }
@@ -107,7 +108,7 @@ export default {
             }
           });
           data.attrText = attrText;
-          this.$root.$axios.post('api/whitelist/create', data, response => {
+          this.$root.$axios.post(Config.api.whitelist.create, data, response => {
             if (response === undefined) {
               return;
             }

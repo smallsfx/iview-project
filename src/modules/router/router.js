@@ -248,7 +248,7 @@ export const appRouter = [
         title: '系统管理',
         component: Main,
         children: [
-            { path: 'user', title: '用户管理', name: 'user-manage', component: () => import('@/views/System/user.vue') },
+            { path: 'user', title: '用户管理', name: 'user-manage', component: () => import('@/views/System/User/index.vue') },
             { path: 'role', title: '角色管理', name: 'role-manage', component: () => import('@/views/System/Role/index.vue') },
             { path: 'log', title: '日志查询', name: 'logger-manage', component: () => import('@/views/System/Log/index.vue') }
         ]

@@ -28,7 +28,7 @@ export default {
                     }
                     return ret;
                 }];
-                console.debug(`开始请求: ${config.url}`);
+                console.debug(`开始请求:[${config.method}] ${config.url}[${config.params?JSON.stringify(config.params):JSON.stringify(config.data)}]`);
                 return config;
             },
             err => {
@@ -39,7 +39,8 @@ export default {
     
         axios.interceptors.response.use(
             response => {
-                console.debug(`接收响应：${JSON.stringify(response.data)}`);
+                // console.debug(`接收响应：${JSON.stringify(response.data)}`);
+                console.debug(`接收响应成功`);
                 if (response.data && response.data.ret === 0) {
                     iView.LoadingBar.finish();
                     return response.data;
@@ -53,7 +54,7 @@ export default {
                     let args = {
                         refresh_token : App.$store.state.refreshToken
                     };
-                    self.post('api/user/refresh', args, function (response) {
+                    self.post(Config.api.oauth.refresh, args, function (response) {
                         if (!response) { return; }
                         console.debug(`TOKEN刷新成功`);
                         let data = response.data;

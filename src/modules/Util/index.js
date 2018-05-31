@@ -6,7 +6,6 @@ import {
   dateformat
 } from './modules/utc';
 import {
-  title,
   inOf,
   oneOf,
   showThisRoute,
@@ -21,7 +20,6 @@ import {
 import dict from "./modules/dict";
 
 const Util = {
-  title,
   inOf,
   oneOf,
   showThisRoute,

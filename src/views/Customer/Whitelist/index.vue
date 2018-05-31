@@ -107,10 +107,10 @@ export default {
                     return;
                 }
                 self.data = response.data.resultData;
-                self.pageCount = self.data.pageCount;
-                self.recordCount = self.data.recordCount;
-                self.pageSize = self.data.pageSize;
-                self.pageIndex = self.data.pageNumber;
+                self.pageCount = response.data.pageCount;
+                self.recordCount = response.data.recordCount;
+                self.pageSize = response.data.pageSize;
+                self.pageIndex = response.data.pageNumber;
             });
         },
         

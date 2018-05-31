@@ -52,7 +52,6 @@
         </div>
     </div>
 </template>
-
 <script>
 import Util from '../../modules/Util/index';
 import Config from '@/config/config';
@@ -60,8 +59,8 @@ export default {
     data () {
         return {
             form: {
-                userName: '',
-                password: '',
+                userName: 'admin',
+                password: 'admin',
                 captcha:'',
                 captchaurl:'',
                 scope:0
@@ -90,7 +89,7 @@ export default {
                     captcha:self.form.captcha,
                     captcha_scope:self.form.scope
                 };
-                self.$root.$axios.post('api/user/login', option, function revole (response) {
+                self.$root.$axios.post(Config.api.oauth.login, option, function revole (response) {
                     if (response === undefined) { return; }
                     let data = response.data;
                     self.$store.commit('setSecurity', data);

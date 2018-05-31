@@ -3,7 +3,8 @@ const os = require('os');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HappyPack = require('happypack');
-var happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
+// var happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
+var happyThreadPool = HappyPack.ThreadPool({ size: 2 });
 function resolve(dir) {
   return path.join(__dirname, dir);
 }
@@ -62,8 +63,12 @@ module.exports = {
         }),
       },
       {
-        test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/,
-        loader: 'url-loader?limit=1024'
+        test: /\.(woff|svg|eot|ttf)\??.*$/,
+        loader: 'url-loader?name=fonts/[name].[ext]'
+      },
+      {
+        test: /\.(gif|jpg|png)\??.*$/,
+        loader: 'url-loader?name=imgs/[name].[ext]'
       },
       {
         test: /\.(html|tpl)$/,
@@ -72,12 +77,8 @@ module.exports = {
     ]
   },
   plugins: [
-    new HappyPack({
-      id: 'happybabel',
-      loaders: ['babel-loader'],
-      threadPool: happyThreadPool,
-      verbose: true
-    })
+    new HappyPack({ id: 'happybabel', loaders: ['babel-loader'], threadPool: happyThreadPool, verbose: true }),
+    new webpack.BannerPlugin('smallsfx<admin_small@163.com> copyright 2018!')
   ],
   resolve: {
     extensions: ['.js', '.vue'],

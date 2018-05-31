@@ -4,45 +4,41 @@
 
 <template>
   <div>
-    <Row>
-      <Input v-model="filter.threadId" icon="search" clearable placeholder="线程号" style="width: 80px" />
-      <!-- 
-      <Input v-model="filter.customerPhone" icon="search" placeholder="新人手机号搜索..." style="width: 200px" />
-      <Input v-model="filter.orderId" icon="search" placeholder="订单号搜索..." style="width: 200px" /> -->
+    <Card>
+      <p slot="title">条件搜索</p>
+      <Row>
+        <Input v-model="filter.threadId" icon="search" clearable placeholder="线程号" style="width: 80px" />
+        <Select v-model="filter.type" style="width:100px" clearable placeholder="日志类型">
+          <Option v-for="item in types" :value="item.value" :key="item.value">{{ item.text }}</Option>
+        </Select>
+        <Select v-model="filter.businessFlag" style="width:100px" clearable placeholder="业务标识">
+          <Option v-for="item in businessFlags" :value="item.value" :key="item.value">{{ item.text }}</Option>
+        </Select>
+        <Select v-model="filter.action" style="width:140px" clearable placeholder="动作标识">
+          <Option v-for="item in actions" :value="item.value" :key="item.value">{{ item.text }}</Option>
+        </Select>
 
-      <Select v-model="filter.type" style="width:100px" clearable placeholder="日志类型">
-        <Option v-for="item in types" :value="item.value" :key="item.value">{{ item.text }}</Option>
-      </Select>
-
-      <Select v-model="filter.businessFlag" style="width:100px" clearable placeholder="业务标识">
-        <Option v-for="item in businessFlags" :value="item.value" :key="item.value">{{ item.text }}</Option>
-      </Select>
-
-      <Select v-model="filter.action" style="width:140px" clearable placeholder="动作标识">
-        <Option v-for="item in actions" :value="item.value" :key="item.value">{{ item.text }}</Option>
-      </Select>
-
-      <span @click="handleSearch" style="margin: 0 10px;">
-        <Button type="primary" icon="search">搜索</Button>
-      </span>
-      <Button @click="handleCancel" type="ghost">取消</Button>
-    </Row>
-    <Row class="margin-top-10">
-      <Table border :loading="loading" ref="selection" :columns="columns" :data="data"></Table>
-    </Row>
-    <Footer>
-      <Page :total="recordCount" :page-size="pageSize" show-sizer show-elevator show-total @on-change="handlePageChange" @on-page-size-change="handleSizeChange"></Page>
-    </Footer>
+        <span @click="handleSearch" style="margin: 0 10px;">
+          <Button type="primary" icon="search">搜索</Button>
+        </span>
+        <Button @click="handleCancel" type="ghost">取消</Button>
+      </Row>
+    </Card>
+    <Card class="margin-top-10">
+      <Row>
+        <Table :loading="loading" ref="selection" :columns="columns" :data="data" stripe></Table>
+      </Row>
+    </Card>
+    <Card class="margin-top-10">
+      <Page size="small" :total="recordCount" :page-size="pageSize" show-sizer show-elevator show-total @on-change="handlePageChange" @on-page-size-change="handleSizeChange"></Page>
+    </Card>
   </div>
 </template>
 
 <script>
 import util from "../../../modules/Util/index";
 import expandRow from "./components/table-expand.vue";
-
-const CONST_API = {
-  QUERY: "api/system/log/query"
-};
+import Config from "@/config/config";
 /** 日志类型 */
 const CONST_DICT_TYPE = {
   system: "系统",
@@ -60,6 +56,9 @@ const CONST_DICT_ACTION = {
   "order-pay-close": "订单关闭",
   logout: "注销",
   login: "登录",
+  enable: "启用",
+  disable: "禁用",
+  "reset-password": "重置密码",
   "change-password": "修改密码",
   undefined: "未知"
 };
@@ -69,42 +68,19 @@ const CONST_DICT_BUSINESS = {
   user: "用户",
   role: "角色",
   system: "系统",
-  "customer-order": "订单"
+  "customer-order": "订单",
+  pay: "支付",
+  whitelist: "客户白名单"
 };
 
 const CONST_COLUMNS = [
-  // {
-  //   type: "selection",
-  //   width: 60,
-  //   align: "center"
-  // },
   {
-    type: "expand",
-    width: 50,
-    render: (h, params) => {
-      return h(expandRow, {
-        props: {
-          row: params.row
-        }
-      });
-    }
+    type: "selection",
+    width: 60,
+    align: "center"
   },
   { key: "serviceFlag", title: "服务节点标志", width: 125 },
   { key: "threadId", title: "线程", width: 80 },
-  {
-    key: "businessFlag",
-    title: "业务标识",
-    width: 100,
-    render: function(h, params) {
-      return h("div", CONST_DICT_BUSINESS[this.row.businessFlag]);
-    }
-  },
-  {
-    key: "content",
-    title: "日志内容",
-    width: 300,
-    ellipsis: true
-  },
   {
     key: "type",
     title: "日志类型",
@@ -114,12 +90,26 @@ const CONST_COLUMNS = [
     }
   },
   {
+    key: "businessFlag",
+    title: "业务标识",
+    width: 100,
+    render: function(h, params) {
+      return h("div", CONST_DICT_BUSINESS[this.row.businessFlag]);
+    }
+  },
+  {
     key: "action",
     title: "操作类型",
     width: 100,
     render: function(h, params) {
       return h("div", CONST_DICT_ACTION[this.row.action]);
     }
+  },
+  {
+    key: "content",
+    title: "日志内容",
+    width: 300,
+    ellipsis: true
   },
   { key: "operator", title: "操作员账号", width: 150 },
   {
@@ -182,8 +172,8 @@ export default {
       this.loading = true;
       let self = this;
       let option = {
-        page: index || this.pageIndex,
-        pageSize: size || this.pageSize
+        page: index || this.pageIndex || 1,
+        pageSize: size || this.pageSize || 10
       };
 
       if (filter) {
@@ -195,16 +185,16 @@ export default {
         });
       }
 
-      this.$root.$axios.get(CONST_API.QUERY, option, response => {
+      this.$root.$axios.get(Config.api.queryLog, option, response => {
         self.loading = false;
         if (response === undefined) {
           return;
         }
         self.data = response.data.resultData;
-        self.pageCount = self.data.pageCount;
-        self.recordCount = self.data.recordCount;
-        self.pageSize = self.data.pageSize;
-        self.pageIndex = self.data.pageNumber;
+        self.pageCount = response.data.pageCount;
+        self.recordCount = response.data.recordCount;
+        self.pageSize = response.data.pageSize;
+        self.pageIndex = response.data.pageNumber;
       });
     },
 

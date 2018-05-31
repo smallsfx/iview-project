@@ -1,9 +1,3 @@
-
-export const title = function (title) {
-  title = title || '业务管理平台';
-  window.document.title = title;
-};
-
 export const inOf = function (arr, targetArr) {
   let res = true;
   arr.forEach(item => {
@@ -173,11 +167,7 @@ export const openNewPage = function (vm, name, argu, query) {
   let tagHasOpened = false;
   while (i < openedPageLen) {
     if (name === pageOpenedList[i].name) { // 页面已经打开
-      vm.$store.commit('pageOpenedList', {
-        index: i,
-        argu: argu,
-        query: query
-      });
+      vm.$store.commit('pageOpenedList', {index: i,argu: argu,query: query});
       tagHasOpened = true;
       break;
     }

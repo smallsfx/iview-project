@@ -26,10 +26,10 @@
           </div>
         </div>
         <div class="header-avator-con">
-          <!-- <full-screen v-model="isFullScreen" @on-change="fullscreenChange"></full-screen> -->
-          <!-- <lock-screen></lock-screen>
+          <full-screen v-model="isFullScreen" @on-change="fullscreenChange"></full-screen>
+          <lock-screen></lock-screen>
           <message-tip v-model="mesCount"></message-tip>
-          <theme-switch></theme-switch> -->
+          <theme-switch></theme-switch>
 
           <div class="user-dropdown-menu-con">
             <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
@@ -71,7 +71,7 @@ import messageTip from "./components/message-tip.vue";
 import themeSwitch from "./components/theme-switch/theme-switch.vue";
 import util from "@/modules/Util/index";
 import scrollBar from "@/views/my-components/scroll-bar/vue-scroller-bars";
-
+import Config from '@/config/config'
 export default {
   components: {
     shrinkableMenu,
@@ -121,7 +121,7 @@ export default {
   },
   methods: {
     init() {
-      this.$root.$axios.post("api/user/permission", {}, response => {
+      this.$root.$axios.post(Config.api.oauth.permission, {}, response => {
         if (!response) {
           return;
         }

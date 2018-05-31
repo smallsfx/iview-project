@@ -2,6 +2,7 @@
     <Table :columns="columns" :data="packages"></Table>
 </template>
 <script>
+import Config from "@/config/config";
 export default {
   props: {
     row: Object
@@ -31,7 +32,7 @@ export default {
   },
   created() {
     let self = this;
-    this.$root.$axios.get("api/package/query", {}, response => {
+    this.$root.$axios.get(Config.api.package.query, {}, response => {
       if (response === undefined) {
         return;
       }
@@ -42,7 +43,7 @@ export default {
       let data = {
       mobile: this.row.mobile
     };
-    this.$root.$axios.get("api/whitelist/attr/query", data, response => {
+    this.$root.$axios.get(Config.api.whitelist.attrQuery, data, response => {
       if (response === undefined) {
         return;
       }

@@ -4,21 +4,46 @@
 
 <template>
   <div>
-    <Row class="margin-top-10">
-      <Table border :loading="loading" ref="selection" :columns="columns" :data="data"></Table>
-    </Row>
-    <Footer>
-      <Page :total="recordCount" :page-size="pageSize" show-sizer show-elevator show-total @on-change="handlePageChange" @on-page-size-change="handleSizeChange"></Page>
-    </Footer>
+    <Card>
+      <p slot="title">条件搜索</p>
+      <Row>
+        <Input v-model="filter.name" icon="search" clearable placeholder="套餐名称" style="width: 150px" />
+
+        <Select v-model="filter.status" style="width:100px" clearable placeholder="状态">
+          <Option v-for="item in statuses" :value="item.value" :key="item.value">{{ item.text }}</Option>
+        </Select>
+
+        <span @click="handleSearch" style="margin: 0 10px;">
+          <Button type="primary" icon="search">搜索</Button>
+        </span>
+        <Button @click="handleCancel" type="ghost">取消</Button>
+      </Row>
+    </Card>
+    <Card class="margin-top-10">
+      <Row>
+        <span @click="handleCreate">
+          <Button type="dashed" icon="search">新增</Button>
+        </span>
+      </Row>
+      <Row class="margin-top-10">
+        <Table :loading="loading" ref="selection" :columns="columns" :data="data" stripe></Table>
+      </Row>
+    </Card>
+    <Card class="margin-top-10">
+      <Page size="small" :total="recordCount" :page-size="pageSize" show-sizer show-elevator show-total @on-change="handlePageChange" @on-page-size-change="handleSizeChange"></Page>
+    </Card>
   </div>
 </template>
 
 <script>
-import util from "../../modules/Util/index";
+import Util from "../../modules/Util/index";
+import Config from "@/config/config";
 
-const CONST_API = {
-  QUERY: "api/package/query"
+const CONST_DICT_STATUS = {
+  "1": "启用",
+  "0": "禁用"
 };
+
 const CONST_COLUMNS = [
   {
     type: "selection",
@@ -26,13 +51,22 @@ const CONST_COLUMNS = [
     align: "center"
   },
   { key: "id", title: "编码", width: 80 },
-  { key: "name", title: "名称"},
-  { key: "desc", title: "描述"}
+  { key: "name", title: "名称" },
+  {
+    key: "status",
+    title: "状态",
+    width: 100,
+    render: function(h, params) {
+      return h("div", CONST_DICT_STATUS[this.row.status]);
+    }
+  },
+  { key: "desc", title: "描述" }
 ];
 
 const CONST_FILTER = (() => {
   return {
-    serviceFlag: "", //服务节点标志
+    name: "",
+    status: ""
   };
 })();
 
@@ -47,13 +81,15 @@ export default {
       pageCount: 0,
       recordCount: 0,
       pageSize: 10,
-      pageIndex: 0
+      pageIndex: 0,
+      statuses: Util.dict2array(CONST_DICT_STATUS)
     };
   },
   methods: {
     init() {
       this.search();
     },
+    handleCreate() {},
 
     handleSearch() {
       this.search(this.filter);
@@ -76,16 +112,16 @@ export default {
         });
       }
 
-      this.$root.$axios.get(CONST_API.QUERY, option, response => {
+      this.$root.$axios.get(Config.api.package.query, option, response => {
         self.loading = false;
         if (response === undefined) {
           return;
         }
         self.data = response.data.resultData;
-        self.pageCount = self.data.pageCount;
-        self.recordCount = self.data.recordCount;
-        self.pageSize = self.data.pageSize;
-        self.pageIndex = self.data.pageNumber;
+        self.pageCount = response.data.pageCount;
+        self.recordCount = response.data.recordCount;
+        self.pageSize = response.data.pageSize;
+        self.pageIndex = response.data.pageNumber;
       });
     },
 

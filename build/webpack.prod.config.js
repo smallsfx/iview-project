@@ -31,7 +31,7 @@ module.exports = merge(webpackBaseConfig, {
         new ExtractTextPlugin({
             // filename: '[name].[hash].css',
             filename: '[name].css',
-            // allChunks: true
+            // allChunks: trueps
         }),
         new webpack.optimize.CommonsChunkPlugin({
             // name: 'vendors',
@@ -39,22 +39,19 @@ module.exports = merge(webpackBaseConfig, {
             name: ['vender-exten', 'vender-base'],
             minChunks: Infinity
         }),
-        new webpack.DefinePlugin({'process.env': {NODE_ENV: '"production"'}}),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false
-            }
-        }),
+        new webpack.DefinePlugin({ 'process.env': { NODE_ENV: '"production"' } }),
+        new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } }),
         new CopyWebpackPlugin([
             {
                 from: 'td_icon.ico'
             },
+            // {
+            //     from: 'src/styles/fonts',
+            //     to: 'fonts'
+            // },
             {
-                from: 'src/styles/fonts',
-                to: 'fonts'
-            },
-            {
-                from: 'src/views/Main/components/theme-switch/theme'
+                from: 'src/views/Main/components/theme-switch/theme',
+                to:'themes'
             },
             {
                 from: 'src/views/my-components/text-editor/tinymce'

@@ -1,13 +1,14 @@
 {
   "name": "qdp.console",
   "version": "0.0.1",
-  "title": "花生VR - 管理平台",
-  "description": "Vue 2.0 admin management system template based on iView",
+  "title": "管理平台",
+  "description": "通用后台管理平台",
   "main": "index.js",
   "scripts": {
     "init": "webpack --progress --config build/webpack.dev.config.js",
     "dev": "webpack-dev-server --content-base ./ --host 127.0.0.1 --port 8090 --open --inline --hot --compress --config build/webpack.dev.config.js",
     "build": "webpack --progress --hide-modules --config build/webpack.prod.config.js",
+    "build2": "webpack --progress --watch --hide-modules --config build/webpack.prod.config.js",
     "lint": "eslint --fix --ext .js,.vue src",
     "test": "npm run lint"
   },

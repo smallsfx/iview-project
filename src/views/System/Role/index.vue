@@ -4,70 +4,109 @@
 
 <template>
   <div>
-    <Row>
-      <span @click="handleSearch" style="margin: 0 10px;">
-        <Button type="primary" icon="search">搜索</Button>
-      </span>
-      <Button @click="handleCancel" type="ghost">取消</Button>
-    </Row>
-    <Row class="margin-top-10">
-      <span @click="handleCreate" style="margin: 0 10px;">
-        <Button type="primary" icon="search">新增</Button>
-      </span>
-    </Row>
-    <Row class="margin-top-10">
-      <Table :loading="loading" ref="selection" :columns="columns" :data="data"></Table>
-    </Row>
-    <Footer>
-      <Page :total="recordCount" :page-size="pageSize" show-sizer show-elevator show-total @on-change="handlePageChange" @on-page-size-change="handleSizeChange"></Page>
-    </Footer>
+    <Card>
+      <p slot="title">条件搜索</p>
+      <Row>
+        <Input v-model="filter.name" icon="search" clearable placeholder="角色名称" style="width: 150px" />
+
+        <Select v-model="filter.status" style="width:100px" clearable placeholder="状态">
+          <Option v-for="item in statuses" :value="item.value" :key="item.value">{{ item.text }}</Option>
+        </Select>
+
+        <span @click="handleSearch" style="margin: 0 10px;">
+          <Button type="primary" icon="search">搜索</Button>
+        </span>
+        <Button @click="handleCancel" type="ghost">取消</Button>
+      </Row>
+    </Card>
+    <Card class="margin-top-10">
+      <Row>
+        <span @click="handleCreate">
+          <Button type="dashed" icon="search">新增</Button>
+        </span>
+      </Row>
+      <Row class="margin-top-10">
+        <Table :loading="loading" ref="selection" :columns="columns" :data="data" stripe></Table>
+      </Row>
+    </Card>
+    <Card class="margin-top-10">
+      <Page size="small" :total="recordCount" :page-size="pageSize" show-sizer show-elevator show-total @on-change="handlePageChange" @on-page-size-change="handleSizeChange"></Page>
+    </Card>
   </div>
 </template>
 
 <script>
 import Util from "../../../modules/Util/index";
+import Config from "@/config/config";
 
-const columns = [
+const CONST_DICT_STATUS = {
+  "1": "启用",
+  "0": "禁用"
+};
+
+const CONST_COLUMNS = [
   {
     type: "selection",
     width: 60,
     align: "center"
   },
-  { key: "serviceFlag", title: "订单编号", width: 125 },
-  { key: "threadId", title: "线程", width: 80 },
-
+  { key: "name", title: "角色名称", width: 200 },
+  { key: "name", title: "权限设置" },
   {
-    key: "content",
-    title: "日志内容",
-    width: 300,
-    ellipsis: true
+    key: "status",
+    title: "状态",
+    width: 100,
+    render: function(h, params) {
+      return h("div", CONST_DICT_STATUS[this.row.status]);
+    }
   },
-  { key: "operator", title: "操作员账号", width: 150 },
   {
     key: "createTime",
-    title: "操作时间",
+    title: "创建时间",
     width: 150,
     render: function(h, params) {
       return h(
         "div",
-        Util.utcToString(this.row.createTime / 1000, "yyyy-MM-dd hh:mm:ss")
+        Util.utcToString(this.row.createTime, "yyyy-MM-dd hh:mm:ss")
       );
     }
   },
-  { key: "ipAddress", title: "登录IP", width: 150 },
-  { key: "remark", title: "附加信息", width: 150, ellipsis: true }
+  {
+    key: "lastModifyTime",
+    title: "最后修改时间",
+    width: 150,
+    render: function(h, params) {
+      return h(
+        "div",
+        Util.utcToString(this.row.lastModifyTime, "yyyy-MM-dd hh:mm:ss")
+      );
+    }
+  }
 ];
+
+const CONST_FILTER = (() => {
+  return {
+    name: "",
+    status: "",
+    beginCreateTime: "", //创建时间范围最小值
+    endCreateTime: "" //创建时间范围最大值
+  };
+})();
 
 export default {
   name: "system-role-search",
   data() {
     return {
       loading: false,
-      columns: columns,
+      filter: CONST_FILTER,
+      columns: CONST_COLUMNS,
+      data: [],
       pageCount: 0,
       recordCount: 0,
       pageSize: 10,
-      pageIndex: 0
+      pageIndex: 0,
+      roles: [],
+      statuses: Util.dict2array(CONST_DICT_STATUS)
     };
   },
   methods: {
@@ -75,16 +114,12 @@ export default {
       this.search();
     },
 
-    handleSearch() {
-      this.search(this.filter);
-    },
-
     search(filter, index, size) {
       this.loading = true;
       let self = this;
       let option = {
-        page: index || this.pageIndex,
-        pageSize: size || this.pageSize
+        page: index || this.pageIndex || 1,
+        pageSize: size || this.pageSize || 10
       };
 
       if (filter) {
@@ -95,22 +130,30 @@ export default {
           }
         });
       }
-      this.$root.$axios.get("api/system/log/query", option, function revole(
-        response
-      ) {
+
+      this.$root.$axios.get(Config.api.role.query, option, response => {
         self.loading = false;
         if (response === undefined) {
           return;
         }
         self.data = response.data.resultData;
-        self.pageCount = self.data.pageCount;
-        self.recordCount = self.data.recordCount;
-        self.pageSize = self.data.pageSize;
-        self.pageIndex = self.data.pageNumber;
+        self.pageCount = response.data.pageCount;
+        self.recordCount = response.data.recordCount;
+        self.pageSize = response.data.pageSize;
+        self.pageIndex = response.data.pageNumber;
       });
     },
 
+    handleCreate() {
+      this.$router.push({ name: "user-create" });
+    },
+
+    handleSearch() {
+      this.search(this.filter);
+    },
+
     handleCancel() {
+      this.filter = CONST_FILTER;
       this.search();
     },
 
@@ -123,10 +166,6 @@ export default {
         return;
       }
       this.search(this.filter, 1, size);
-    },
-
-    handleCreate() {
-      this.$router.push({ name: "role-create" });
     }
   },
   mounted() {
