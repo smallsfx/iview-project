@@ -94,6 +94,8 @@ export default {
         { key: "userName", title: "登录名称", width: 200 },
         { key: "nickName", title: "用户名称", width: 200 },
         { key: "roleName", title: "角色名称", width: 200 },
+        { key: "email", title: "电子邮箱", width: 200 },
+        { key: "mobile", title: "搜集号码", width: 200 },
         {
           key: "status",
           title: "状态",
@@ -102,6 +104,7 @@ export default {
             return h("div", CONST_DICT_STATUS[this.row.status]);
           }
         },
+        { key: "remark", title: "描述", width: 150, ellipsis: true },
         {
           key: "createTime",
           title: "创建时间",

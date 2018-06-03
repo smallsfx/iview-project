@@ -58,7 +58,7 @@ export const otherRouter = {
     _moduleRouteGenerator('create/whitelist', 'whitelist-create', '新增白名单', () => import('@/views/Customer/Whitelist/create.vue')),
 
     _moduleRouteGenerator('create/user', 'user-create', '创建用户', () => import('@/views/System/User/edit.vue')),
-    _moduleRouteGenerator('update/user/:id', 'user-update', '编辑角色', () => import('@/views/System/User/edit.vue')),
+    _moduleRouteGenerator('update/user/:id', 'user-update', '编辑用户', () => import('@/views/System/User/edit.vue')),
 
     _moduleRouteGenerator('create/role', 'role-create', '创建角色', () => import('@/views/System/Role/edit.vue')),
     _moduleRouteGenerator('update/role/:id', 'role-update', '编辑角色', () => import('@/views/System/Role/edit.vue')),

@@ -8,19 +8,6 @@
       <Col span="24">
       <Card>
         <p slot="title">基本信息</p>
-        <FormItem label="用户名称" prop="nickname">
-          <Input v-model="formValidate.nickname" placeholder="输入用户名称" clearable></Input>
-        </FormItem>
-
-        <FormItem label="手机号码" prop="mobile">
-          <Input v-model="formValidate.mobile" placeholder="输入手机号码" clearable></Input>
-        </FormItem>
-
-        <FormItem label="用户角色" prop="roleId">
-          <Select v-model="formValidate.roleId" clearable placeholder="用户角色">
-            <Option v-for="item in roles" :value="item.value" :key="item.value">{{ item.text }}</Option>
-          </Select>
-        </FormItem>
         
         <FormItem label="登录名" prop="username">
           <Input v-model="formValidate.username" placeholder="输入登录" clearable></Input>
@@ -32,6 +19,24 @@
 
         <FormItem v-if="id===undefined" label="确认密码" prop="password2">
           <Input type="password" v-model="formValidate.password2" placeholder="输入确认密码" clearable></Input>
+        </FormItem>
+
+        <FormItem label="用户名称" prop="nickname">
+          <Input v-model="formValidate.nickname" placeholder="输入用户名称" clearable></Input>
+        </FormItem>
+
+        <FormItem label="电子邮箱" prop="email">
+          <Input v-model="formValidate.email" placeholder="输入电子邮箱" clearable></Input>
+        </FormItem>
+
+        <FormItem label="手机号码" prop="mobile">
+          <Input v-model="formValidate.mobile" placeholder="输入手机号码" clearable></Input>
+        </FormItem>
+
+        <FormItem label="用户角色" prop="roleId">
+          <Select v-model="formValidate.roleId" clearable placeholder="用户角色">
+            <Option v-for="item in roles" :value="item.value" :key="item.value">{{ item.text }}</Option>
+          </Select>
         </FormItem>
 
         <FormItem label="用户描述">
@@ -63,6 +68,7 @@ export default {
         roldId:'',
         password:'',
         password2:'',
+        email:'',
         mobile: '',
         remark:''
       },
@@ -70,15 +76,38 @@ export default {
         nickname: [{ required: true, message: "用户名称必须输入", trigger: "blur" }],
         username: [{ required: true, message: "登录名必须输入", trigger: "blur" }],
         roleId: [{ required: true, message: "必须为用户分配一个角色", trigger: "change" }],
+        email:[
+          { type: 'email', message: '电子邮箱格式不正确' }
+        ],
         mobile:[
-          {required: true, message: '手机号码必须输入'},
           {pattern: /^1[34578]\d{9}$/, message: '手机号码格式不正确'}
         ],
         password: [
-          { required: true, message: "密码必须输入", trigger: "blur" }
+          {
+            trigger: "blur",
+            validator:(rule, value, callback, source, options)=> {
+              if (value === '') {
+                return callback(new Error('请输入密码'));
+              } else if (value.length < 7) {
+                return callback(new Error('密码需由6个以上字符组成'));
+              } else {
+                callback();
+              }
+            }
+          }
         ],
         password2: [
-          { required: true, message: "确认密码必须输入", trigger: "blur" }
+            {
+              validator:(rule, value, callback, source, options)=> {
+                if (value === '') {
+                  return callback(new Error('请再次输入密码'));
+                } else if (value !== this.formValidate.password) {
+                  return callback(new Error('两次密码不一致'));
+                } else {
+                  callback();
+                }
+              }
+            }
         ],
       },
       roles:[],
@@ -121,8 +150,9 @@ export default {
         }
         this.formValidate.nickname = response.data.nickName;
         this.formValidate.username = response.data.userName;
-        this.formValidate.roldId = response.data.roldId;
+        this.formValidate.roleId = response.data.roleId;
         this.formValidate.password = response.data.password;
+        this.formValidate.email = response.data.email;
         this.formValidate.mobile = response.data.mobile;
         this.formValidate.remark = response.data.remark;
       });
@@ -138,6 +168,7 @@ export default {
               remark: this.formValidate.remark,
               roleId :this.formValidate.roleId,
               password:this.formValidate.password,
+              email:this.formValidate.email,
               mobile:this.formValidate.mobile
             };
 
