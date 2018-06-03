@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import Util from '../../../modules/Util/index';
+import Util from "../../../modules/Util/index";
 import expandRow from "./components/table-expand.vue";
 const CONST_API = {
   QUERY: "api/whitelist/query",
@@ -46,9 +46,9 @@ const columns = [
       });
     }
   },
-  { key: 'name', title: '客户名称'},
-  { key: 'mobile', title: '客户手机号码'},
-  { key: 'discount', title: '折扣率'},
+  { key: "name", title: "客户名称" },
+  { key: "mobile", title: "客户手机号码" },
+  { key: "discount", title: "折扣率" }
   // { key: 'status', title: '状态', width: 100 }
   // {
   //     key: 'createTime',
@@ -65,78 +65,78 @@ const columns = [
 ];
 
 export default {
-    name: 'whitelist-search',
-    data () {
-        return {
-            loading: false,
-            filter: {
-                name:'',
-                mobile:''
-            },
-            columns: columns,
-            data: [],
-            pageCount: 0,
-            recordCount: 0,
-            pageSize: 10,
-            pageIndex: 1
-        };
+  name: "whitelist-search",
+  data() {
+    return {
+      loading: false,
+      filter: {
+        name: "",
+        mobile: ""
+      },
+      columns: columns,
+      data: [],
+      pageCount: 0,
+      recordCount: 0,
+      pageSize: 10,
+      pageIndex: 1
+    };
+  },
+  methods: {
+    init() {
+      this.search();
     },
-    methods: {
-        init () {
-            this.search();
-        },
 
-        search (filter, index, size) {
-            this.loading = true;
-            let self = this;
-            let option = {
-                page: index || this.pageIndex,
-                pageSize: size || this.pageSize
-            };
-            if (filter) {
-                Object.keys(filter).forEach((name, index) => {
-                    let value = filter[name];
-                    if (value) {
-                        option[name] = value;
-                    }
-                });
-            }
-            this.$root.$axios.get(CONST_API.QUERY, option, function revole (response) {
-                self.loading = false;
-                if (response === undefined) {
-                    return;
-                }
-                self.data = response.data.resultData;
-                self.pageCount = response.data.pageCount;
-                self.recordCount = response.data.recordCount;
-                self.pageSize = response.data.pageSize;
-                self.pageIndex = response.data.pageNumber;
-            });
-        },
-        
-        handleSearch () {
-            this.search(this.filter);
-        },
-
-        handleCancel () {
-            this.filter.name = '';
-            this.filter.mobile = '';
-            this.search();
-        },
-
-        handlePageChange (index) {
-            this.search(this.filter, index);
-        },
-
-        handleSizeChange (size) {
-            if (size === this.pageSize) {
-                return;
-            }
-            this.search(this.filter, 1, size);
+    search(filter, index, size) {
+      this.loading = true;
+      let self = this;
+      let option = {
+        page: index || this.pageIndex,
+        pageSize: size || this.pageSize
+      };
+      if (filter) {
+        Object.keys(filter).forEach((name, index) => {
+          let value = filter[name];
+          if (value) {
+            option[name] = value;
+          }
+        });
+      }
+      this.$root.$axios.get(CONST_API.QUERY, option, function revole(response) {
+        self.loading = false;
+        if (response === undefined) {
+          return;
         }
+        self.data = response.data.resultData;
+        self.pageCount = response.data.pageCount;
+        self.recordCount = response.data.recordCount;
+        self.pageSize = response.data.pageSize;
+        self.pageIndex = response.data.pageNumber;
+      });
     },
-    mounted () {
-        this.init();
+
+    handleSearch() {
+      this.search(this.filter);
+    },
+
+    handleCancel() {
+      this.filter.name = "";
+      this.filter.mobile = "";
+      this.search();
+    },
+
+    handlePageChange(index) {
+      this.search(this.filter, index);
+    },
+
+    handleSizeChange(size) {
+      if (size === this.pageSize) {
+        return;
+      }
+      this.search(this.filter, 1, size);
     }
+  },
+  mounted() {
+    this.init();
+  }
 };
 </script>

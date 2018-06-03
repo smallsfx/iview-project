@@ -52,9 +52,6 @@ module.exports = merge(webpackBaseConfig, {
             {
                 from: 'src/views/Main/components/theme-switch/theme',
                 to:'themes'
-            },
-            {
-                from: 'src/views/my-components/text-editor/tinymce'
             }
         ], {
                 ignore: [

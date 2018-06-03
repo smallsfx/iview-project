@@ -27,17 +27,6 @@ module.exports = merge(webpackBaseConfig, {
         new webpack.optimize.CommonsChunkPlugin({
             name: ['vender-exten', 'vender-base'],
             minChunks: Infinity
-        }),
-        // new CopyWebpackPlugin([
-        //     { from: 'src/views/Main/components/theme-switch/theme' },
-        //     { from: 'src/views/my-components/text-editor/tinymce' }
-        // ], { ignore: ['text-editor.vue'] }),
-        new HtmlWebpackPlugin({
-            title: `${package.title} v${package.version}`,
-            favicon: './td_icon.ico',
-            filename: '../index.html',
-            template: '!!ejs-loader!./src/template/index.ejs',
-            inject: false
         })
     ]
 });

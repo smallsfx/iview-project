@@ -16,6 +16,13 @@ console.info(JSON.stringify(Config));
 
 Vue.use(VueI18n);
 Vue.use(iView);
+Vue.config.errorHandler = (error, vm) => {
+    console.group(`抛出全局异常`);
+    console.error(vm);
+    console.error(error);
+    console.groupEnd(`抛出全局异常`);
+};
+Vue.prototype.$throw = (error) => errorHandler(error, this);
 
 const VueApp = new Vue({
     el: '#app',

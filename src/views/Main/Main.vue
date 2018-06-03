@@ -70,7 +70,7 @@ import lockScreen from "./components/lockscreen/lockscreen.vue";
 import messageTip from "./components/message-tip.vue";
 import themeSwitch from "./components/theme-switch/theme-switch.vue";
 import util from "@/modules/Util/index";
-import scrollBar from "@/views/my-components/scroll-bar/vue-scroller-bars";
+import scrollBar from "./components/scroll-bar/vue-scroller-bars";
 import Config from '@/config/config'
 export default {
   components: {

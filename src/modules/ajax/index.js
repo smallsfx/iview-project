@@ -28,11 +28,11 @@ export default {
                     }
                     return ret;
                 }];
-                console.debug(`开始请求:[${config.method}] ${config.url}[${config.params?JSON.stringify(config.params):JSON.stringify(config.data)}]`);
+                // console.debug(`开始请求:[${config.method}] ${config.url}[${config.params?JSON.stringify(config.params):JSON.stringify(config.data)}]`);
                 return config;
             },
             err => {
-                console.debug(`请求失败`);
+                // console.debug(`请求失败`);
                 return Promise.reject(err);
             }
         );
@@ -40,7 +40,7 @@ export default {
         axios.interceptors.response.use(
             response => {
                 // console.debug(`接收响应：${JSON.stringify(response.data)}`);
-                console.debug(`接收响应成功`);
+                // console.debug(`接收响应成功`);
                 if (response.data && response.data.ret === 0) {
                     iView.LoadingBar.finish();
                     return response.data;
@@ -60,20 +60,11 @@ export default {
                         let data = response.data;
                         App.$store.commit('setSecurity', data);
                         if (self.lastRequest) {
-                            switch (self.lastRequest.method) {
-                                case "get":
-                                    self.get(self.lastRequest.url,
-                                        self.lastRequest.option,
-                                        self.lastRequest.resolve,
-                                        self.lastRequest.reject)
-                                    break;
-                                case "post":
-                                    self.post(self.lastRequest.url,
-                                        self.lastRequest.option,
-                                        self.lastRequest.resolve,
-                                        self.lastRequest.reject)
-                                    break;
-                            }
+                            self[self.lastRequest.method](
+                                self.lastRequest.url,
+                                self.lastRequest.option,
+                                self.lastRequest.resolve,
+                                self.lastRequest.reject)
                         }
                     });
                 } else if(response.data.ret === 10004){

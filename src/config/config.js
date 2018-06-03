@@ -8,10 +8,16 @@ export default {
       permission: 'api/oauth/user/permission'
     },
     user: {
-      query: 'api/user/query'
+      query: 'api/user/query',
+      create:'api/user/create',
+      update:'api/user/update',
+      detail:'api/user/detail'
     },
     role: {
-      query: 'api/role/query'
+      query: 'api/role/query',
+      create:'api/role/create',
+      update:'api/role/update',
+      detail:'api/role/detail'
     },
     package: {
       query: 'api/package/query'

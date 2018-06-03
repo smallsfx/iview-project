@@ -5,7 +5,7 @@
 <template>
     <Menu ref="sideMenu" :active-name="$route.name" :open-names="openNames" :theme="menuTheme" width="auto"z @on-select="changeMenu">
         <template v-for="item in menuList">
-            <MenuItem v-if="item.children.length<=1" :name="item.children[0].name" :key="'menuitem' + item.name">
+            <MenuItem v-if="item.children.length==1" :name="item.children[0].name" :key="'menuitem' + item.name">
                 <Icon :type="item.children[0].icon || item.icon" :size="iconSize" :key="'menuicon' + item.name"></Icon>
                 <span class="layout-text" :key="'title' + item.name">{{ itemTitle(item.children[0]) }}</span>
             </MenuItem>
@@ -45,11 +45,11 @@ export default {
             this.$emit('on-change', active);
         },
         itemTitle (item) {
-            if (typeof item.title === 'object') {
-                return this.$t(item.title.i18n);
-            } else {
+            // if (typeof item.title === 'object') {
+            //     return this.$t(item.title.i18n);
+            // } else {
                 return item.title;
-            }
+            // }
         }
     },
     updated () {

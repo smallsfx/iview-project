@@ -1,15 +1,11 @@
-<style lang="less">
-@import "../../../styles/common.less";
-</style>
-
 <template>
   <div>
     <Card>
       <p slot="title">条件搜索</p>
       <Row>
-        <Input v-model="filter.name" icon="search" clearable placeholder="角色名称" style="width: 150px" />
+        <Input v-model="table.filter.name" icon="search" clearable placeholder="角色名称" style="width: 150px" />
 
-        <Select v-model="filter.status" style="width:100px" clearable placeholder="状态">
+        <Select v-model="table.filter.status" style="width:100px" clearable placeholder="状态">
           <Option v-for="item in statuses" :value="item.value" :key="item.value">{{ item.text }}</Option>
         </Select>
 
@@ -26,11 +22,11 @@
         </span>
       </Row>
       <Row class="margin-top-10">
-        <Table :loading="loading" ref="selection" :columns="columns" :data="data" stripe></Table>
+        <Table :loading="table.loading" ref="selection" :columns="table.columns" :data="table.data" stripe></Table>
       </Row>
     </Card>
     <Card class="margin-top-10">
-      <Page size="small" :total="recordCount" :page-size="pageSize" show-sizer show-elevator show-total @on-change="handlePageChange" @on-page-size-change="handleSizeChange"></Page>
+      <Page size="small" :total="table.recordCount" :page-size="table.pageSize" show-sizer show-elevator show-total @on-change="handlePageChange" @on-page-size-change="handleSizeChange"></Page>
     </Card>
   </div>
 </template>
@@ -38,51 +34,11 @@
 <script>
 import Util from "../../../modules/Util/index";
 import Config from "@/config/config";
-
+import ViewBase from "@/views/ViewBase/index.vue";
 const CONST_DICT_STATUS = {
   "1": "启用",
   "0": "禁用"
 };
-
-const CONST_COLUMNS = [
-  {
-    type: "selection",
-    width: 60,
-    align: "center"
-  },
-  { key: "name", title: "角色名称", width: 200 },
-  { key: "name", title: "权限设置" },
-  {
-    key: "status",
-    title: "状态",
-    width: 100,
-    render: function(h, params) {
-      return h("div", CONST_DICT_STATUS[this.row.status]);
-    }
-  },
-  {
-    key: "createTime",
-    title: "创建时间",
-    width: 150,
-    render: function(h, params) {
-      return h(
-        "div",
-        Util.utcToString(this.row.createTime, "yyyy-MM-dd hh:mm:ss")
-      );
-    }
-  },
-  {
-    key: "lastModifyTime",
-    title: "最后修改时间",
-    width: 150,
-    render: function(h, params) {
-      return h(
-        "div",
-        Util.utcToString(this.row.lastModifyTime, "yyyy-MM-dd hh:mm:ss")
-      );
-    }
-  }
-];
 
 const CONST_FILTER = (() => {
   return {
@@ -94,82 +50,93 @@ const CONST_FILTER = (() => {
 })();
 
 export default {
-  name: "system-role-search",
+  extends: ViewBase,
   data() {
     return {
-      loading: false,
-      filter: CONST_FILTER,
-      columns: CONST_COLUMNS,
-      data: [],
-      pageCount: 0,
-      recordCount: 0,
-      pageSize: 10,
-      pageIndex: 0,
       roles: [],
       statuses: Util.dict2array(CONST_DICT_STATUS)
     };
   },
-  methods: {
-    init() {
-      this.search();
-    },
-
-    search(filter, index, size) {
-      this.loading = true;
-      let self = this;
-      let option = {
-        page: index || this.pageIndex || 1,
-        pageSize: size || this.pageSize || 10
-      };
-
-      if (filter) {
-        Object.keys(filter).forEach((name, index) => {
-          let value = filter[name];
-          if (value) {
-            option[name] = value;
-          }
-        });
-      }
-
-      this.$root.$axios.get(Config.api.role.query, option, response => {
-        self.loading = false;
-        if (response === undefined) {
-          return;
-        }
-        self.data = response.data.resultData;
-        self.pageCount = response.data.pageCount;
-        self.recordCount = response.data.recordCount;
-        self.pageSize = response.data.pageSize;
-        self.pageIndex = response.data.pageNumber;
-      });
-    },
-
-    handleCreate() {
-      this.$router.push({ name: "user-create" });
-    },
-
-    handleSearch() {
-      this.search(this.filter);
-    },
-
-    handleCancel() {
-      this.filter = CONST_FILTER;
-      this.search();
-    },
-
-    handlePageChange(index) {
-      this.search(this.filter, index);
-    },
-
-    handleSizeChange(size) {
-      if (size === this.pageSize) {
-        return;
-      }
-      this.search(this.filter, 1, size);
-    }
-  },
   mounted() {
     this.init();
+  },
+  methods: {
+    /** 初始化模块页面 */
+    init() {
+      // 为ViewBase设置查询API
+      this.table.api = Config.api.role.query;
+      // 为ViewBase设置表格字段
+      this.table.columns =  [
+        {
+          type: "selection",
+          width: 60,
+          align: "center"
+        },
+        { key: "name", title: "角色名称", width: 200 },
+        { key: "name", title: "权限设置" },
+        {
+          key: "status",
+          title: "状态",
+          minWidth: 100,
+          render: function(h, params) {
+            return h("div", CONST_DICT_STATUS[this.row.status]);
+          }
+        },
+        {
+          key: "createTime",
+          title: "创建时间",
+          minWidth: 300,
+          render: function(h, params) {
+            return h(
+              "div",
+              Util.utcToString(this.row.createTime, "yyyy-MM-dd hh:mm:ss")
+            );
+          }
+        },
+        {
+          key: "lastModifyTime",
+          title: "最后修改时间",
+          minWidth: 300,
+          render: function(h, params) {
+            return h(
+              "div",
+              Util.utcToString(this.row.lastModifyTime, "yyyy-MM-dd hh:mm:ss")
+            );
+          }
+        },
+        {
+          title: "操作",
+          key: "show_more",
+          align: "center",
+          render: (h, params) => {
+            return h(
+              "Button",
+              {
+                props: { type: "text", size: "small" },
+                on: {
+                  click: () => {
+                    this.$router.push({
+                      name: "role-update",
+                      params: { id: params.row.id }
+                    });
+                  }
+                }
+              },
+              "编辑"
+            );
+          }
+        }
+      ];
+      // 为ViewBase设置查询条件定义
+      this.table.filter = CONST_FILTER;
+      // 调用ViewBase.search方法，执行数据查询
+      this.search();
+    },
+    /** 新增按钮点击事件处理 */
+    handleCreate() {
+      this.$router.push({ name: "role-create" });
+    },
+
   }
 };
 </script>

@@ -96,8 +96,10 @@ export const setCurrentPath = function (vm, name) {
     ];
   } else {
     let currentPathObj = vm.$store.state.app.routers.filter(item => {
-      if (item.children.length <= 1) {
-        return item.children[0].name === name;
+      if(item.children.length === 0){
+        return false;
+      } else if (item.children.length === 1) {
+        return item.children[0].name == name;
       } else {
         let i = 0;
         let childArr = item.children;
@@ -222,16 +224,3 @@ export const fullscreenEvent = function (vm) {
   vm.$store.commit('updateMenulist');
   // 全屏相关
 };
-
-// export const otherMethods = [
-//   title,
-//   inOf,
-//   oneOf,
-//   showThisRoute,
-//   getRouterObjByName,
-//   handleTitle,
-//   setCurrentPath,
-//   openNewPage,
-//   toDefaultPage,
-//   fullscreenEvent
-// ]
