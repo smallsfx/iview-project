@@ -31,8 +31,8 @@
       </FormItem>
 
       <FormItem>
-        <Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
-        <Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">Reset</Button>
+        <Button type="primary" @click="handleSubmit('formValidate')">保存</Button>
+        <Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
       </FormItem>
     </Form>
   </Card>
@@ -58,11 +58,8 @@ export default {
           }
         ],
         mobile: [
-          {
-            required: true,
-            message: "请输入白名单客户手机号码",
-            trigger: "blur"
-          },
+          {required: true,message: "请输入白名单客户手机号码",trigger: "blur"},
+          {pattern: /^1[34578]\d{9}$/, message: '手机号码格式不正确'}
           // { type: "", message: "Incorrect email format", trigger: "blur" }
         ]
       }

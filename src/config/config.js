@@ -24,7 +24,12 @@ export default {
     },
     whitelist: {
       create: 'api/whitelist/create',
-      attrQuery: 'api/whitelist/attr/query'
+      attrQuery: 'api/whitelist/attr/query',
+
+      query: "api/whitelist/query",
+      update: "api/whitelist/update",
+      remove: "api/whitelist/remove"
+
     },
     order: {
       query: 'api/order/query'

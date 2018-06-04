@@ -55,7 +55,11 @@ export const otherRouter = {
     { path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: () => import('@/views/own-space/own-space.vue') },
     { path: 'message', title: '消息中心', name: 'message_index', component: () => import('@/views/message/message.vue') },
 
-    _moduleRouteGenerator('create/whitelist', 'whitelist-create', '新增白名单', () => import('@/views/Customer/Whitelist/create.vue')),
+    _moduleRouteGenerator('create/package', 'package-create', '新增套餐', () => import('@/views/Package/edit.vue')),
+    _moduleRouteGenerator('update/package/:id', 'package-update', '编辑套餐', () => import('@/views/Package/edit.vue')),
+
+    _moduleRouteGenerator('create/whitelist', 'whitelist-create', '新增白名单', () => import('@/views/Customer/Whitelist/edit.vue')),
+    _moduleRouteGenerator('update/whitelist/:id', 'whitelist-update', '编辑白名单', () => import('@/views/Customer/Whitelist/edit.vue')),
 
     _moduleRouteGenerator('create/user', 'user-create', '创建用户', () => import('@/views/System/User/edit.vue')),
     _moduleRouteGenerator('update/user/:id', 'user-update', '编辑用户', () => import('@/views/System/User/edit.vue')),
@@ -76,7 +80,7 @@ export const appRouter = [
   {
     path: '/package', icon: 'key', name: 'package', title: '套餐管理', component: Main,
     children: [
-      _moduleRouteGenerator('search', 'package-search', '套餐查询', () => import('@/views/Package/Search/index.vue'), [CONST_POWER.BROWSER, CONST_POWER.SEARCH, CONST_POWER.CREATE, CONST_POWER.UPDATE, CONST_POWER.REMOVE, CONST_POWER.ENABLE, CONST_POWER.DISABLE])
+      _moduleRouteGenerator('search', 'package-search', '套餐查询', () => import('@/views/Package/index.vue'), [CONST_POWER.BROWSER, CONST_POWER.SEARCH, CONST_POWER.CREATE, CONST_POWER.UPDATE, CONST_POWER.REMOVE, CONST_POWER.ENABLE, CONST_POWER.DISABLE])
     ]
   },
   {

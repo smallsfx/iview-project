@@ -71,14 +71,11 @@ export default {
         { key: "status",title: "状态",width: 100,render: function(h, params) {return h("div", CONST_DICT_STATUS[this.row.status]);}},
         Util.generator.createDateColumn('createTime','创建时间'),
         Util.generator.createDateColumn('lastModifyTime','最后修改时间'),
-        Util.generator.createActionColumn('操作',150,[
-          {
-            text:'编辑',
-            click:()=>{
-              this.$router.push({name: "role-update",params: { id: params.row.id }});
-            }
-          }
-        ])
+        Util.generator.createActionColumn('操作',150,(params)=>{
+          return [
+            { text:'编辑',click:()=>{ this.$router.push({name: "role-update",params: { id: params.row.id }}); } }
+          ];
+        })
       ];
       // 为ViewBase设置查询条件定义
       this.table.filter = CONST_FILTER;

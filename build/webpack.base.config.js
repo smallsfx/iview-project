@@ -77,7 +77,8 @@ module.exports = {
   },
   plugins: [
     new HappyPack({ id: 'happybabel', loaders: ['babel-loader'], threadPool: happyThreadPool, verbose: true }),
-    new webpack.BannerPlugin('smallsfx<admin_small@163.com> copyright 2018!')
+    new webpack.BannerPlugin('smallsfx<admin_small@163.com> copyright 2018!'),
+    // new webpack.IgnorePlugin(/theme\//)
   ],
   resolve: {
     extensions: ['.js', '.vue'],

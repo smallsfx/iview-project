@@ -30,7 +30,8 @@
           <lock-screen></lock-screen>
           <message-tip v-model="mesCount"></message-tip>
           <theme-switch></theme-switch>
-
+        </div>
+        <div class="header-user-con">
           <div class="user-dropdown-menu-con">
             <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
               <Dropdown transfer trigger="click" @on-click="handleClickUserDropdown">

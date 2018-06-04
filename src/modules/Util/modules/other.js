@@ -1,26 +1,8 @@
-export const inOf = function (arr, targetArr) {
-  let res = true;
-  arr.forEach(item => {
-    if (targetArr.indexOf(item) < 0) {
-      res = false;
-    }
-  });
-  return res;
-};
-
 export const oneOf = function (ele, targetArr) {
   if (targetArr.indexOf(ele) >= 0) {
     return true;
   } else {
     return false;
-  }
-};
-
-export const showThisRoute = function (itAccess, currentAccess) {
-  if (typeof itAccess === 'object' && Array.isArray(itAccess)) {
-    return oneOf(currentAccess, itAccess);
-  } else {
-    return itAccess === currentAccess;
   }
 };
 
@@ -42,17 +24,13 @@ export const getRouterObjByName = function (routers, name) {
   return null;
 };
 
-export const handleTitle = function (vm, item) {
-  return item.title;
-};
-
 export const setCurrentPath = function (vm, name) {
   let title = '';
   let isOtherRouter = false;
   vm.$store.state.app.routers.forEach(item => {
     if (item.children.length === 1) {
       if (item.children[0].name === name) {
-        title = handleTitle(vm, item);
+        title = item.title;
         if (item.name === 'otherRouter') {
           isOtherRouter = true;
         }
@@ -60,7 +38,7 @@ export const setCurrentPath = function (vm, name) {
     } else {
       item.children.forEach(child => {
         if (child.name === name) {
-          title = handleTitle(vm, child);
+          title = child.title;
           if (item.name === 'otherRouter') {
             isOtherRouter = true;
           }
@@ -72,7 +50,7 @@ export const setCurrentPath = function (vm, name) {
   if (name === 'home_index') {
     currentPathArr = [
       {
-        title: handleTitle(vm, getRouterObjByName(vm.$store.state.app.routers, 'home_index')),
+        title: getRouterObjByName(vm.$store.state.app.routers, 'home_index').title,
         path: '',
         name: 'home_index'
       }
@@ -80,7 +58,7 @@ export const setCurrentPath = function (vm, name) {
   } else if ((name.indexOf('_index') >= 0 || isOtherRouter) && name !== 'home_index') {
     currentPathArr = [
       {
-        title: handleTitle(vm, getRouterObjByName(vm.$store.state.app.routers, 'home_index')),
+        title: getRouterObjByName(vm.$store.state.app.routers, 'home_index').title,
         path: '/home',
         name: 'home_index'
       },
@@ -212,11 +190,4 @@ export const toDefaultPage = function (routers, name, route, next) {
   if (notHandle) {
     next();
   }
-};
-
-export const fullscreenEvent = function (vm) {
-  vm.$store.commit('initCachepage');
-  // 权限菜单过滤相关
-  vm.$store.commit('updateMenulist');
-  // 全屏相关
 };

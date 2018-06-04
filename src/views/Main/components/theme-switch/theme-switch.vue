@@ -86,7 +86,7 @@ export default {
             }
             let path = '';
             let themeLink = document.querySelector('link[name="theme"]');
-            let userName = this.userInfo.nickName;
+            let userName = localStorage.nickName;
             if (localStorage.theme) {
                 let themeList = JSON.parse(localStorage.theme);
                 let index = 0;
@@ -132,15 +132,15 @@ export default {
     },
     created () {
         let path = '';
+        // console.log(JSON.stringify(config));
         if (config.env.indexOf('dev') > -1) {
             path = './src/views/Main/components/theme-switch/theme/';
         } else {
             path = 'dist/themes/';
         }
-        let name = this.userInfo.nickName;
         if (localStorage.theme) {
             let hasThisUser = JSON.parse(localStorage.theme).some(item => {
-                if (item.userName === name) {
+                if (item.userName === localStorage.nickName) {
                     this.$store.commit('changeMenuTheme', item.menuTheme);
                     this.$store.commit('changeMainTheme', item.mainTheme);
                     return true;

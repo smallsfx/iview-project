@@ -95,6 +95,11 @@
     return output;
   };
 
+  /**
+   * 将字符串通过MD5加密
+   * @param {string} string 需要通过MD5加密的字符串
+   * @return {string} 经过MD5加密过的字符串
+   */
   let md5 = function (string) {
     var x = Array();
     var k, AA, BB, CC, DD, a, b, c, d;

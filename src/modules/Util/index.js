@@ -1,4 +1,4 @@
-import MD5 from './modules/md5';
+import md5 from './modules/md5';
 import URL from './modules/url';
 import {
   stringToUTC,
@@ -6,15 +6,11 @@ import {
   dateformat
 } from './modules/utc';
 import {
-  inOf,
   oneOf,
-  showThisRoute,
   getRouterObjByName,
-  handleTitle,
   setCurrentPath,
   openNewPage,
-  toDefaultPage,
-  fullscreenEvent
+  toDefaultPage
 } from './modules/other';
 
 import dict from "./modules/dict";
@@ -22,21 +18,17 @@ import dict from "./modules/dict";
 import generator from "./modules/generator";
 
 const Util = {
-  inOf,
   oneOf,
-  showThisRoute,
   getRouterObjByName,
-  handleTitle,
   setCurrentPath,
   openNewPage,
   toDefaultPage,
-  fullscreenEvent,
 
   stringToUTC,
   utcToString,
   dateformat,
-
-  md5: MD5,
+  
+  md5,
   parseURL: URL,
   dict2array: dict,
   generator

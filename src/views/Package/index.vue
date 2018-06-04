@@ -3,8 +3,11 @@
     <Card>
       <p slot="title">条件搜索</p>
       <Row>
-        <Input v-model="table.filter.name" icon="search" clearable placeholder="客户姓名" style="width: 150px" />
-        <Input v-model="table.filter.mobile" icon="search" clearable placeholder="客户手机号" style="width: 150px" />
+        <Input v-model="table.filter.code" icon="search" clearable placeholder="套餐编码" style="width: 150px" />
+        <Input v-model="table.filter.name" icon="search" clearable placeholder="套餐名称" style="width: 150px" />
+        <Select v-model="table.filter.status" style="width:100px" clearable placeholder="状态">
+          <Option v-for="item in dicts.statuses" :value="item.value" :key="item.value">{{ item.text }}</Option>
+        </Select>
 
         <span @click="handleSearch" style="margin: 0 10px;">
           <Button type="primary" icon="search">搜索</Button>
@@ -29,15 +32,22 @@
 </template>
 
 <script>
-import Util from "../../../modules/Util/index";
+import Util from "@/modules/Util/index";
 import Config from "@/config/config";
 import ViewBase from "@/views/ViewBase/index.vue";
-import expandRow from "./components/table-expand.vue";
+
+const CONST_DICT_STATUS = {
+  "1": "启用",
+  "0": "禁用"
+};
 
 export default {
   extends: ViewBase,
   data() {
     return {
+      dicts: {
+        statuses: Util.dict2array(CONST_DICT_STATUS)
+      }
     };
   },
   mounted() {
@@ -48,31 +58,37 @@ export default {
       // 为ViewBase设置表格字段
       this.table.columns = [
         { type: "selection", width: 60, align: "center" },
-        { type: "expand",width: 50,render: (h, params) => {return h(expandRow, {props: {row: params.row}});}},
-        { key: "name", title: "客户名称"},
-        { key: "mobile", title: "客户手机号码"},
-        { key: "discount", title: "折扣率"},
-        Util.generator.createDateColumn('createTime','创建时间'),
-        Util.generator.createDateColumn('lastModifyTime','最后修改时间'),
+        { key: "id", title: "编码", width: 80 },
+        { key: "name", title: "名称" },
+        {
+          key: "status",
+          title: "状态",
+          width: 100,
+          render: function(h, params) {
+            return h("div", CONST_DICT_STATUS[this.row.status]);
+          }
+        },
+        { key: "desc", title: "描述" },
         Util.generator.createActionColumn('操作',150,(params)=>{
           return [
-            { text:'编辑',click:()=>{ this.$router.push({name: "whitelist-update",params: { id: params.row.id }}); } }
+            { text:'编辑',click:()=>{ this.$router.push({name: "package-update",params: { id: params.row.id }}); } }
           ];
         })
       ];
       // 为ViewBase设置查询API
-      this.table.api = Config.api.whitelist.query;
+      this.table.api = Config.api.package.query;
       // 为ViewBase设置查询条件定义
       this.table.filter = {
-        name:'',
-        mobile:''
+        name: "",
+        code: "",
+        status: ""
       };
       // 调用ViewBase.search方法，执行数据查询
       this.search();
     },
 
     handleCreate(){
-      this.$router.push({ name: "whitelist-create" });
+      this.$router.push({ name: "package-create" });
     }
   }
 };

@@ -36,6 +36,8 @@ const user = {
                 roleName : data.roleName,
                 mobile : data.mobile
             };
+            // localStorage.username = data.username;
+            localStorage.nickName = data.nickName;
             localStorage.permission = JSON.stringify(data.permissions);
         }
 

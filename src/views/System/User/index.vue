@@ -86,11 +86,7 @@ export default {
     init() {
       // 为ViewBase设置表格字段
       this.table.columns = [
-        {
-          type: "selection",
-          width: 60,
-          align: "center"
-        },
+        { type: "selection", width: 60, align: "center" },
         { key: "userName", title: "登录名称", width: 200 },
         { key: "nickName", title: "用户名称", width: 200 },
         { key: "roleName", title: "角色名称", width: 200 },
@@ -107,29 +103,11 @@ export default {
         { key: "remark", title: "描述", width: 150, ellipsis: true },
         Util.generator.createDateColumn('createTime','创建时间'),
         Util.generator.createDateColumn('lastModifyTime','最后修改时间'),
-        {
-          title: "操作",
-          key: "show_more",
-          align: "center",
-          width: 150,
-          render: (h, params) => {
-            return h(
-              "Button",
-              {
-                props: { type: "text", size: "small" },
-                on: {
-                  click: () => {
-                    this.$router.push({
-                      name: "user-update",
-                      params: { id: params.row.id }
-                    });
-                  }
-                }
-              },
-              "编辑"
-            );
-          }
-        }
+        Util.generator.createActionColumn('操作',150,(params)=>{
+          return [
+            { text:'编辑',click:()=>{ this.$router.push({name: "user-update",params: { id: params.row.id }}); } }
+          ];
+        })
       ];
       // 为ViewBase设置查询API
       this.table.api = Config.api.user.query;
