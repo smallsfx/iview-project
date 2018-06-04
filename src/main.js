@@ -5,8 +5,6 @@ import { router } from './modules/router/index';
 import { appRouter } from './modules/router/router';
 import store from './modules/store';
 import App from './views/App/App.vue';
-import '@/modules/locale';
-import VueI18n from 'vue-i18n';
 import Axios from './modules/ajax/index';
 import './modules/permission/index';
 
@@ -14,7 +12,7 @@ import Config from '@/config/config';
 
 console.info(JSON.stringify(Config));
 
-Vue.use(VueI18n);
+// Vue.use(VueI18n);
 Vue.use(iView);
 Vue.config.errorHandler = (error, vm) => {
     console.group(`抛出全局异常`);

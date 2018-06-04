@@ -5,7 +5,6 @@ import Vue from 'vue';
 const app = {
   state: {
     cachePage: [],
-    lang: '',
     isFullScreen: false,
     openedSubmenuArr: [], // 要展开的菜单数组
     menuTheme: 'dark', // 主题
@@ -129,6 +128,7 @@ const app = {
           state.cachePage.splice(index, 1);
         }
       });
+
       localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
 
       vm.$router.push(lastPageObj);
@@ -165,6 +165,7 @@ const app = {
       state.cachePage.length = 0;
       localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
     },
+
     clearOtherTags(state, vm) {
       let currentName = vm.$route.name;
       let currentIndex = 0;
@@ -185,20 +186,18 @@ const app = {
       state.cachePage = newCachepage;
       localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
     },
+
     setOpenedList(state) {
       // console.log(localStorage.pageOpenedList);
       state.pageOpenedList = localStorage.pageOpenedList ? JSON.parse(localStorage.pageOpenedList) : [otherRouter.children[0]];
     },
+
     setCurrentPath(state, pathArr) {
       state.currentPath = pathArr;
     },
+    
     setCurrentPageName(state, name) {
       state.currentPageName = name;
-    },
-
-    switchLang(state, lang) {
-      state.lang = lang;
-      Vue.config.lang = lang;
     },
 
     clearOpenedSubmenu(state) {

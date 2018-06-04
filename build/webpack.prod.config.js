@@ -21,18 +21,10 @@ module.exports = merge(webpackBaseConfig, {
         publicPath: 'dist/',
         filename: '[name].js',
         chunkFilename: '[name].chunk.js'
-        // filename: '[name].[hash].js',
-        // chunkFilename: '[name].[hash].chunk.js'
     },
     plugins: [
-        new cleanWebpackPlugin(['dist/*'], {
-            root: path.resolve(__dirname, '../')
-        }),
-        new ExtractTextPlugin({
-            // filename: '[name].[hash].css',
-            filename: '[name].css',
-            // allChunks: trueps
-        }),
+        new cleanWebpackPlugin(['dist/*'], {root: path.resolve(__dirname, '../')}),
+        new ExtractTextPlugin({filename: '[name].css'}),
         new webpack.optimize.CommonsChunkPlugin({
             // name: 'vendors',
             // filename: 'vendors.[hash].js'
@@ -53,11 +45,7 @@ module.exports = merge(webpackBaseConfig, {
                 from: 'src/views/Main/components/theme-switch/theme',
                 to:'themes'
             }
-        ], {
-                ignore: [
-                    'text-editor.vue'
-                ]
-            }),
+        ]),
         new HtmlWebpackPlugin({
             title: `${package.title} v${package.version}`,
             favicon: './td_icon.ico',

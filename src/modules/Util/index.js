@@ -19,6 +19,8 @@ import {
 
 import dict from "./modules/dict";
 
+import generator from "./modules/generator";
+
 const Util = {
   inOf,
   oneOf,
@@ -36,7 +38,8 @@ const Util = {
 
   md5: MD5,
   parseURL: URL,
-  dict2array: dict
+  dict2array: dict,
+  generator
 }
 
 export default Util;

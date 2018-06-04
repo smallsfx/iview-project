@@ -43,11 +43,7 @@ export const getRouterObjByName = function (routers, name) {
 };
 
 export const handleTitle = function (vm, item) {
-  if (typeof item.title === 'object') {
-    return vm.$t(item.title.i18n);
-  } else {
-    return item.title;
-  }
+  return item.title;
 };
 
 export const setCurrentPath = function (vm, name) {

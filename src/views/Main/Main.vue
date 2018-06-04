@@ -103,14 +103,8 @@ export default {
     currentPath() {
       return this.$store.state.app.currentPath; // 当前面包屑数组
     },
-    // avatorPath() {
-    //   return localStorage.avatorImgPath;
-    // },
     cachePage() {
       return this.$store.state.app.cachePage;
-    },
-    lang() {
-      return this.$store.state.app.lang;
     },
     menuTheme() {
       return this.$store.state.app.menuTheme;
@@ -203,9 +197,6 @@ export default {
       }
       this.checkTag(to.name);
       localStorage.currentPageName = to.name;
-    },
-    lang() {
-      util.setCurrentPath(this, this.$route.name); // 在切换语言时用于刷新面包屑
     },
     openedSubmenuArr() {
       setTimeout(() => {

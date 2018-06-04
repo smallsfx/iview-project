@@ -35,10 +35,8 @@
 import Util from "../../../modules/Util/index";
 import Config from "@/config/config";
 import ViewBase from "@/views/ViewBase/index.vue";
-const CONST_DICT_STATUS = {
-  "1": "启用",
-  "0": "禁用"
-};
+
+const CONST_DICT_STATUS = {"1": "启用","0": "禁用"};
 
 const CONST_FILTER = (() => {
   return {
@@ -67,65 +65,20 @@ export default {
       this.table.api = Config.api.role.query;
       // 为ViewBase设置表格字段
       this.table.columns =  [
-        {
-          type: "selection",
-          width: 60,
-          align: "center"
-        },
-        { key: "name", title: "角色名称", width: 200 },
-        { key: "name", title: "权限设置" },
-        {
-          key: "status",
-          title: "状态",
-          minWidth: 100,
-          render: function(h, params) {
-            return h("div", CONST_DICT_STATUS[this.row.status]);
+        { type: "selection", width: 60, align: "center"},
+        { key: "name", title: "角色名称", width: 150 },
+        { key: "permission", title: "权限设置", minWidth: 400, ellipsis: true  },
+        { key: "status",title: "状态",width: 100,render: function(h, params) {return h("div", CONST_DICT_STATUS[this.row.status]);}},
+        Util.generator.createDateColumn('createTime','创建时间'),
+        Util.generator.createDateColumn('lastModifyTime','最后修改时间'),
+        Util.generator.createActionColumn('操作',150,[
+          {
+            text:'编辑',
+            click:()=>{
+              this.$router.push({name: "role-update",params: { id: params.row.id }});
+            }
           }
-        },
-        {
-          key: "createTime",
-          title: "创建时间",
-          minWidth: 300,
-          render: function(h, params) {
-            return h(
-              "div",
-              Util.utcToString(this.row.createTime, "yyyy-MM-dd hh:mm:ss")
-            );
-          }
-        },
-        {
-          key: "lastModifyTime",
-          title: "最后修改时间",
-          minWidth: 300,
-          render: function(h, params) {
-            return h(
-              "div",
-              Util.utcToString(this.row.lastModifyTime, "yyyy-MM-dd hh:mm:ss")
-            );
-          }
-        },
-        {
-          title: "操作",
-          key: "show_more",
-          align: "center",
-          render: (h, params) => {
-            return h(
-              "Button",
-              {
-                props: { type: "text", size: "small" },
-                on: {
-                  click: () => {
-                    this.$router.push({
-                      name: "role-update",
-                      params: { id: params.row.id }
-                    });
-                  }
-                }
-              },
-              "编辑"
-            );
-          }
-        }
+        ])
       ];
       // 为ViewBase设置查询条件定义
       this.table.filter = CONST_FILTER;

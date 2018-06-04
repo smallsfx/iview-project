@@ -105,28 +105,8 @@ export default {
           }
         },
         { key: "remark", title: "描述", width: 150, ellipsis: true },
-        {
-          key: "createTime",
-          title: "创建时间",
-          width: 150,
-          render: function(h, params) {
-            return h(
-              "div",
-              Util.utcToString(this.row.createTime, "yyyy-MM-dd hh:mm:ss")
-            );
-          }
-        },
-        {
-          key: "lastModifyTime",
-          title: "最后修改时间",
-          width: 150,
-          render: function(h, params) {
-            return h(
-              "div",
-              Util.utcToString(this.row.lastModifyTime, "yyyy-MM-dd hh:mm:ss")
-            );
-          }
-        },
+        Util.generator.createDateColumn('createTime','创建时间'),
+        Util.generator.createDateColumn('lastModifyTime','最后修改时间'),
         {
           title: "操作",
           key: "show_more",
