@@ -20,7 +20,7 @@
                     ref="tagsPageOpened"
                     :key="item.name" 
                     :name="item.name" 
-                    @on-close="closePage"
+                    @on-close="handleClosePage"
                     @click.native="linkTo(item)"
                     :closable="item.name==='home_index'?false:true"
                     :color="item.children?(item.children[0].name===currentPageName?'blue':'default'):(item.name===currentPageName?'blue':'default')"
@@ -63,33 +63,15 @@ export default {
       itemTitle (item) {
         return item.title;
       },
-      closePage (event, name) {
-          let pageOpenedList = this.$store.state.app.pageOpenedList;
-          let lastPageObj = pageOpenedList[0];
-          if (this.currentPageName === name) {
-              let len = pageOpenedList.length;
-              for (let i = 1; i < len; i++) {
-                  if (pageOpenedList[i].name === name) {
-                      if (i < (len - 1)) {
-                          lastPageObj = pageOpenedList[i + 1];
-                      } else {
-                          lastPageObj = pageOpenedList[i - 1];
-                      }
-                      break;
-                  }
-              }
-          } else {
-              let tagWidth = event.target.parentNode.offsetWidth;
-              this.tagBodyLeft = Math.min(this.tagBodyLeft + tagWidth, 0);
-          }
-          this.$store.commit('removeTag', name);
-          this.$store.commit('closePage', name);
-          pageOpenedList = this.$store.state.app.pageOpenedList;
-          localStorage.pageOpenedList = JSON.stringify(pageOpenedList);
-          if (this.currentPageName === name) {
-              this.linkTo(lastPageObj);
-          }
+
+      handleClosePage (event, name) {
+        if (this.currentPageName !== name) {
+          let tagWidth = event.target.parentNode.offsetWidth;
+          this.tagBodyLeft = Math.min(this.tagBodyLeft + tagWidth, 0);
+        }
+        this.$store.dispatch('closePage',name);
       },
+
       linkTo (item) {
           let routerObj = {};
           routerObj.name = item.name;

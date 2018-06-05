@@ -16,7 +16,7 @@ const app = {
     routers: [otherRouter, ...appRouter],
     tagsList: [...otherRouter.children],
     messageCount: 0,
-    dontCache: ['text-editor', 'artical-publish'] // 在这里定义你不想要缓存的页面的name属性值(参见路由配置router.js)
+    dontCache: [] // 在这里定义你不想要缓存的页面的name属性值(参见路由配置router.js)
   },
   mutations: {
     setTagsList(state, list) {
@@ -24,7 +24,7 @@ const app = {
     },
     // 更新菜单列表
     updateMenulist(state) {
-      console.info(`更新菜单`);
+      console.debug(`debug - 更新菜单`);
       let permissions = [];
       if (localStorage.permission) {
         permissions = JSON.parse(localStorage.permission);
@@ -107,47 +107,6 @@ const app = {
       }
     },
 
-    closePage(state, name) {
-      state.cachePage.forEach((item, index) => {
-        if (item === name) {
-          state.cachePage.splice(index, 1);
-        }
-      });
-    },
-
-    closeCurrentPage(state, vm) {
-      let lastPageObj = state.pageOpenedList[state.pageOpenedList.length - 2];
-
-      state.pageOpenedList.map((item, index) => {
-        if (item.name === vm.$route.name) {
-          state.pageOpenedList.splice(index, 1);
-        }
-      });
-      state.cachePage.forEach((item, index) => {
-        if (item === vm.$route.name) {
-          state.cachePage.splice(index, 1);
-        }
-      });
-
-      localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
-
-      vm.$router.push(lastPageObj);
-    },
-
-    initCachepage(state) {
-      if (localStorage.cachePage) {
-        state.cachePage = JSON.parse(localStorage.cachePage);
-      }
-    },
-
-    removeTag(state, name) {
-      state.pageOpenedList.map((item, index) => {
-        if (item.name === name) {
-          state.pageOpenedList.splice(index, 1);
-        }
-      });
-    },
-
     pageOpenedList(state, get) {
       let openedPage = state.pageOpenedList[get.index];
       if (get.argu) {
@@ -160,12 +119,21 @@ const app = {
       localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
     },
 
+    /**
+     * 关闭全部页面
+     * @param {object} state 状态管理器
+     */
     clearAllTags(state) {
       state.pageOpenedList.splice(1);
       state.cachePage.length = 0;
       localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
     },
 
+    /**
+     * 关闭其他页面
+     * @param {object} state 状态管理器
+     * @param {object} vm Vue对象
+     */
     clearOtherTags(state, vm) {
       let currentName = vm.$route.name;
       let currentIndex = 0;
@@ -188,8 +156,15 @@ const app = {
     },
 
     setOpenedList(state) {
-      // console.log(localStorage.pageOpenedList);
-      state.pageOpenedList = localStorage.pageOpenedList ? JSON.parse(localStorage.pageOpenedList) : [otherRouter.children[0]];
+      state.pageOpenedList = localStorage.pageOpenedList 
+        ? JSON.parse(localStorage.pageOpenedList)
+        : [otherRouter.children[0]];
+
+      if (localStorage.cachePage) {
+        state.cachePage = JSON.parse(localStorage.cachePage);
+      } else {
+        state.cachePage.length = 0;
+      }
     },
 
     setCurrentPath(state, pathArr) {
@@ -213,8 +188,13 @@ const app = {
         state.cachePage.push(tagObj.name);
         localStorage.cachePage = JSON.stringify(state.cachePage);
       }
-      state.pageOpenedList.push(tagObj);
+      state.pageOpenedList.push({name:tagObj.name, path:tagObj.path, title:tagObj.title});
       localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
+    }
+  },
+  actions:{
+    init:function(context){
+      console.debug(`debug - 初始化 APP store`);
     }
   }
 };

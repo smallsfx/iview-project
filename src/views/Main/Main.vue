@@ -72,7 +72,7 @@ import messageTip from "./components/message-tip.vue";
 import themeSwitch from "./components/theme-switch/theme-switch.vue";
 import util from "@/modules/Util/index";
 import scrollBar from "./components/scroll-bar/vue-scroller-bars";
-import Config from '@/config/config'
+import Config from "@/config/config";
 export default {
   components: {
     shrinkableMenu,
@@ -116,6 +116,7 @@ export default {
   },
   methods: {
     init() {
+      // 请求当前登录用户的权限
       this.$root.$axios.post(Config.api.oauth.permission, {}, response => {
         if (!response) {
           return;
@@ -135,6 +136,8 @@ export default {
         if (pathArr.length >= 2) {
           this.$store.commit("addOpenSubmenu", pathArr[1].name);
         }
+        // 显示打开的页面的列表
+        this.$store.commit("setOpenedList");
       });
     },
     toggleClick() {
@@ -142,15 +145,9 @@ export default {
     },
     handleClickUserDropdown(name) {
       if (name === "ownSpace") {
-        util.openNewPage(this, "ownspace_index");
-        this.$router.push({
-          name: "ownspace_index"
-        });
+        this.$store.dispatch("openNewPage", "ownspace_index");
       } else if (name === "loginout") {
-        // 退出登录
-        this.$store.commit("logout", this);
-        this.$store.commit("clearOpenedSubmenu");
-        this.$router.push({ name: "login" });
+        this.$store.dispatch("logout", this.$router);
       }
     },
     checkTag(name) {
@@ -161,12 +158,7 @@ export default {
       });
       if (!openpageHasTag) {
         //  解决关闭当前标签后再点击回退按钮会退到当前页时没有标签的问题
-        util.openNewPage(
-          this,
-          name,
-          this.$route.params || {},
-          this.$route.query || {}
-        );
+        this.$store.dispatch( "openNewPage", name, this.$route.params, this.$route.query);
       }
     },
     handleSubmenuChange(val) {
@@ -184,12 +176,13 @@ export default {
       // console.log(isFullScreen);
     },
     scrollBarResize() {
-      if( this.$refs.scrollBar){
+      if (this.$refs.scrollBar) {
         this.$refs.scrollBar.resize();
       }
     }
   },
   watch: {
+    
     $route(to) {
       this.$store.commit("setCurrentPageName", to.name);
       let pathArr = util.setCurrentPath(this, to.name);
@@ -199,6 +192,7 @@ export default {
       this.checkTag(to.name);
       localStorage.currentPageName = to.name;
     },
+
     openedSubmenuArr() {
       setTimeout(() => {
         this.scrollBarResize();
@@ -210,8 +204,7 @@ export default {
     window.addEventListener("resize", this.scrollBarResize);
   },
   created() {
-    // 显示打开的页面的列表
-    this.$store.commit("setOpenedList");
+    //
   },
   dispatch() {
     window.removeEventListener("resize", this.scrollBarResize);

@@ -173,17 +173,7 @@ export default {
             this.editPasswordModal = true;
         },
         cancelEditUserInfor () {
-            this.$store.commit('removeTag', 'ownspace_index');
-            localStorage.pageOpenedList = JSON.stringify(this.$store.state.app.pageOpenedList);
-            let lastPageName = '';
-            if (this.$store.state.app.pageOpenedList.length > 1) {
-                lastPageName = this.$store.state.app.pageOpenedList[1].name;
-            } else {
-                lastPageName = this.$store.state.app.pageOpenedList[0].name;
-            }
-            this.$router.push({
-                name: lastPageName
-            });
+          this.$store.dispatch('closePage', 'ownspace_index');
         },
         saveEdit () {
             this.$refs['userForm'].validate((valid) => {
@@ -216,7 +206,7 @@ export default {
             });
         },
         init () {
-            this.userForm.name = this.$root.$store.store.user.info.nickName;
+            this.userForm.name = this.$root.$store.state.user.info.nickName;
             this.userForm.cellphone = '13700043840';
             this.initPhone = '13700043840';
             this.userForm.company = '-';

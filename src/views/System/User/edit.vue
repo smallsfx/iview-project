@@ -178,7 +178,7 @@ export default {
                   return;
                 }
                 this.$root.$Notice.open({title: '新增用户成功'});
-                this.$store.commit('closeCurrentPage',this);
+                this.$store.dispatch('closePage');
               });
             } else {
               option.id = this.id;
@@ -187,7 +187,7 @@ export default {
                   return;
                 }
                 this.$root.$Notice.open({title: '保存用户成功'});
-                this.$store.commit('closeCurrentPage',this);
+                this.$store.dispatch('closePage');
               });
             }
 

@@ -9,7 +9,6 @@ import {
   oneOf,
   getRouterObjByName,
   setCurrentPath,
-  openNewPage,
   toDefaultPage
 } from './modules/other';
 
@@ -21,7 +20,6 @@ const Util = {
   oneOf,
   getRouterObjByName,
   setCurrentPath,
-  openNewPage,
   toDefaultPage,
 
   stringToUTC,

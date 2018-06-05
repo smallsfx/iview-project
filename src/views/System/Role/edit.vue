@@ -159,7 +159,7 @@ export default {
                   return;
                 }
                 this.$root.$Notice.open({title: '新增角色成功'});
-                this.$store.commit('closeCurrentPage',this);
+                this.$store.dispatch('closePage');
               });
             } else {
               option.id = this.id;
@@ -168,9 +168,7 @@ export default {
                   return;
                 }
                 this.$root.$Notice.open({title: '保存角色成功'});
-                // this.$store.commit('removeTag', this.$route.name);
-                // this.$store.commit('closePage', this.$route.name);
-                this.$store.commit('closeCurrentPage',this);
+                this.$store.dispatch('closePage');
               });
             }
 

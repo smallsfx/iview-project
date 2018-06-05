@@ -92,8 +92,8 @@ export default {
             if (response === undefined) {
               return;
             }
-
             this.$root.$Notice.open({title: '操作成功'});
+          this.$store.dispatch('closePage', 'package-edit');
           });
         }
         if (valid) {
