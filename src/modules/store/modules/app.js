@@ -9,7 +9,8 @@ const app = {
     openedSubmenuArr: [], // 要展开的菜单数组
     menuTheme: 'dark', // 主题
     themeColor: '',
-    pageOpenedList: [{ title: '首页', path: '', name: 'home_index' }],
+    pages:[{ title: '首页', path: '', name: 'home_index' }],
+    caches:[],
     currentPageName: '',
     currentPath: [{ title: '首页', path: '', name: 'home_index' }], // 面包屑数组
     menuList: [],
@@ -107,16 +108,23 @@ const app = {
       }
     },
 
-    pageOpenedList(state, get) {
-      let openedPage = state.pageOpenedList[get.index];
+    /**
+     * 将需要排序的对象放置到队列最末端
+     * @param {object} state 状态管理器
+     * @param {JSON} get 排序对象
+     */
+    orderPages(state, get) {
+      let pages = JSON.parse(localStorage.framework_pages);
+      let openedPage = pages[get.index];
       if (get.argu) {
         openedPage.argu = get.argu;
       }
       if (get.query) {
         openedPage.query = get.query;
       }
-      state.pageOpenedList.splice(get.index, 1, openedPage);
-      localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
+      pages.splice(get.index,1,openedPage);
+      state.pages = pages;
+      localStorage.framework_pages = JSON.stringify(state.pages);
     },
 
     /**
@@ -124,9 +132,9 @@ const app = {
      * @param {object} state 状态管理器
      */
     clearAllTags(state) {
-      state.pageOpenedList.splice(1);
-      state.cachePage.length = 0;
-      localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
+      state.pages.splice(1);
+      state.caches.length = 0;
+      localStorage.framework_pages = JSON.stringify(state.pages);
     },
 
     /**
@@ -137,34 +145,34 @@ const app = {
     clearOtherTags(state, vm) {
       let currentName = vm.$route.name;
       let currentIndex = 0;
-      state.pageOpenedList.forEach((item, index) => {
+      state.pages.forEach((item, index) => {
         if (item.name === currentName) {
           currentIndex = index;
         }
       });
       if (currentIndex === 0) {
-        state.pageOpenedList.splice(1);
+        state.pages.splice(1);
       } else {
-        state.pageOpenedList.splice(currentIndex + 1);
-        state.pageOpenedList.splice(1, currentIndex - 1);
+        state.pages.splice(currentIndex + 1);
+        state.pages.splice(1, currentIndex - 1);
       }
-      let newCachepage = state.cachePage.filter(item => {
+      let newCachepage = state.caches.filter(item => {
         return item === currentName;
       });
-      state.cachePage = newCachepage;
-      localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
+      state.caches = newCachepage;
+      // this.__save__localStorage(state);
+      localStorage.framework_pages = JSON.stringify(state.pages);
     },
 
     setOpenedList(state) {
-      state.pageOpenedList = localStorage.pageOpenedList 
-        ? JSON.parse(localStorage.pageOpenedList)
+      console.debug(`debug - set pages & caches`);
+      state.pages = localStorage.framework_pages 
+        ? JSON.parse(localStorage.framework_pages)
         : [otherRouter.children[0]];
 
-      if (localStorage.cachePage) {
-        state.cachePage = JSON.parse(localStorage.cachePage);
-      } else {
-        state.cachePage.length = 0;
-      }
+      state.caches = localStorage.framework_cache_pages
+        ? JSON.parse( localStorage.framework_cache_pages)
+        : []
     },
 
     setCurrentPath(state, pathArr) {
@@ -185,13 +193,19 @@ const app = {
 
     increateTag(state, tagObj) {
       if (!Util.oneOf(tagObj.name, state.dontCache)) {
-        state.cachePage.push(tagObj.name);
-        localStorage.cachePage = JSON.stringify(state.cachePage);
+        state.caches.push(tagObj.name);
+        localStorage.framework_cache_pages = JSON.stringify(state.caches);
       }
-      state.pageOpenedList.push({name:tagObj.name, path:tagObj.path, title:tagObj.title});
-      localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
+      state.pages.push({name:tagObj.name, path:tagObj.path, title:tagObj.title});
+      localStorage.framework_pages = JSON.stringify(state.pages);
+    },
+
+    __save__localStorage(state){
+      localStorage.framework_pages = JSON.stringify(state.pages);
     }
+
   },
+  
   actions:{
     init:function(context){
       console.debug(`debug - 初始化 APP store`);

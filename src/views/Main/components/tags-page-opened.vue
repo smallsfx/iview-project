@@ -24,7 +24,7 @@
                     @click.native="linkTo(item)"
                     :closable="item.name==='home_index'?false:true"
                     :color="item.children?(item.children[0].name===currentPageName?'blue':'default'):(item.name===currentPageName?'blue':'default')"
-                >{{ itemTitle(item) }}</Tag>
+                >{{ item.title }}</Tag>
             </transition-group>
         </div>
     </div>
@@ -56,13 +56,10 @@ export default {
         return this.$store.state.app.currentTitle;
       },
       tagsList () {
-        return this.$store.state.app.pageOpenedList;
+        return this.$store.state.app.pages;
       }
     },
     methods: {
-      itemTitle (item) {
-        return item.title;
-      },
 
       handleClosePage (event, name) {
         if (this.currentPageName !== name) {
@@ -85,6 +82,7 @@ export default {
               this.$router.push(routerObj);
           }
       },
+
       handlescroll (e) {
           var type = e.type;
           let delta = 0;
@@ -107,6 +105,7 @@ export default {
           }
           this.tagBodyLeft = left;
       },
+
       handleTagsOption (type) {
           if (type === 'clearAll') {
               this.$store.commit('clearAllTags');
@@ -118,6 +117,7 @@ export default {
           }
           this.tagBodyLeft = 0;
       },
+      
       moveToView (tag) {
           if (tag.offsetLeft < -this.tagBodyLeft) {
               // 标签在可视区域左侧
@@ -131,6 +131,7 @@ export default {
           }
       }
     },
+
     mounted () {
         this.refsTag = this.$refs.tagsPageOpened;
         setTimeout(() => {
@@ -143,6 +144,7 @@ export default {
         }, 1); // 这里不设定时器就会有偏移bug
         this.tagsCount = this.tagsList.length;
     },
+    
     watch: {
         '$route' (to) {
             this.currentPageName = to.name;

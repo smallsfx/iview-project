@@ -88,7 +88,7 @@ export default {
     /** 通用查询按钮点击事件处理 */
     handleSearch() {
       console.info(`view-base:handleSearch()`);
-      this.search(this.table.filter);
+      this.search(this.table.filter,1);
     },
     /** 通用取消按钮点击事件处理 */
     handleCancel() {

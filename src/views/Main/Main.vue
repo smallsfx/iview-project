@@ -3,7 +3,7 @@
 </style>
 <template>
   <div class="main" :class="{'main-hide-text': shrink}">
-    <div class="sidebar-menu-con" :style="{width: shrink?'60px':'200px', overflow: shrink ? 'visible' : 'auto'}">
+    <div class="sidebar-menu-con" :style="{width: shrink?'60px':'200px', overflow: shrink ? 'visible' : 'auto', background:menuTheme === 'dark' ? '#495060' : '#fff'}">
       <scroll-bar ref="scrollBar">
         <shrinkable-menu :shrink="shrink" @on-change="handleSubmenuChange" :theme="menuTheme" :before-push="beforePush" :open-names="openedSubmenuArr" :menu-list="menuList">
           <div slot="top" class="logo-con">
@@ -62,6 +62,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import shrinkableMenu from "./components/shrinkable-menu/shrinkable-menu.vue";
 import tagsPageOpened from "./components/tags-page-opened.vue";
@@ -99,7 +100,7 @@ export default {
       return this.$store.state.app.menuList;
     },
     pageTagsList() {
-      return this.$store.state.app.pageOpenedList; // 打开的页面的页面对象
+      return this.$store.state.app.pages; // 打开的页面的页面对象
     },
     currentPath() {
       return this.$store.state.app.currentPath; // 当前面包屑数组
@@ -140,16 +141,19 @@ export default {
         this.$store.commit("setOpenedList");
       });
     },
+    
     toggleClick() {
       this.shrink = !this.shrink;
     },
+
     handleClickUserDropdown(name) {
       if (name === "ownSpace") {
         this.$store.dispatch("openNewPage", "ownspace_index");
       } else if (name === "loginout") {
-        this.$store.dispatch("logout", this.$router);
+        this.$store.dispatch("logout");
       }
     },
+
     checkTag(name) {
       let openpageHasTag = this.pageTagsList.some(item => {
         if (item.name === name) {
@@ -161,9 +165,11 @@ export default {
         this.$store.dispatch( "openNewPage", name, this.$route.params, this.$route.query);
       }
     },
+
     handleSubmenuChange(val) {
       // console.log(val)
     },
+
     beforePush(name) {
       // if (name === 'accesstest_index') {
       //     return false;
@@ -172,15 +178,19 @@ export default {
       // }
       return true;
     },
+
     fullscreenChange(isFullScreen) {
       // console.log(isFullScreen);
     },
+
     scrollBarResize() {
       if (this.$refs.scrollBar) {
         this.$refs.scrollBar.resize();
       }
     }
+
   },
+
   watch: {
     
     $route(to) {
@@ -198,14 +208,18 @@ export default {
         this.scrollBarResize();
       }, 300);
     }
+
   },
+
   mounted() {
     this.init();
     window.addEventListener("resize", this.scrollBarResize);
   },
+
   created() {
     //
   },
+
   dispatch() {
     window.removeEventListener("resize", this.scrollBarResize);
   }

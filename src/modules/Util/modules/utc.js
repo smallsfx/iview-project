@@ -64,9 +64,3 @@ export const dateformat = function (date, format) {
   }
   return format;
 }
-
-// export const utcMethods = [
-//   stringToUTC,
-//   utcToString,
-//   dateformat
-// ];

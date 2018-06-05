@@ -8,8 +8,8 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     //
-    _router:undefined,
-    _vue :undefined,
+    _router: undefined,
+    _vue: undefined,
   },
   mutations: {
     //
@@ -20,7 +20,7 @@ const store = new Vuex.Store({
      * @param {object} context 状态管理器
      * @param {object} vue Vue实例对象
      */
-    init:function(context, vue){
+    init: function (context, vue) {
       context.state._router = vue.$router;
       context.state._vue = vue;
     },
@@ -41,14 +41,24 @@ const store = new Vuex.Store({
      * @param {JSON} argu 打开新页面时附带的params
      * @param {JSON} query 打开新页面时附带的query
      */
-    openNewPage: function(context,name, argu, query) {
-      let pageOpenedList = context.state.app.pageOpenedList;
-      let openedPageLen = pageOpenedList.length;
+    openNewPage: function (context, name, argu, query) {
+      console.debug(`debug - openNewPage - ${name} - ${argu} - ${query}`);
+
+      let openeds = [];
+      if( localStorage.framework_pages ){
+        openeds = JSON.parse (localStorage.framework_pages);
+      } else {
+        openeds = context.state.app.pages;
+        localStorage.framework_pages = JSON.stringify(context.state.app.pages);
+      }
+      let pageCount = openeds.length;
+
+      console.debug(`debug - pages - ${openeds} - ${pageCount}`);
       let i = 0;
       let tagHasOpened = false;
-      while (i < openedPageLen) {
-        if (name === pageOpenedList[i].name) { // 页面已经打开
-          context.commit('pageOpenedList', {index: i,argu: argu,query: query});
+      while (i < pageCount) {
+        if (name === openeds[i].name) { // 页面已经打开
+          context.commit('orderPages', { index: i, argu: argu, query: query });
           tagHasOpened = true;
           break;
         }
@@ -82,28 +92,28 @@ const store = new Vuex.Store({
      * @param {object} context 状态管理器
      * @param {string} name 待关闭页面的名称 [在router中定义]，默认为当前页面
      */
-    closePage:function(context, name){
-      if( name == undefined ){
+    closePage: function (context, name) {
+      if (name == undefined) {
         name = context.state._vue.$route.name;
       }
       // 移除标签
-      context.state.app.pageOpenedList.map((item, index) => {
+      context.state.app.pages.map((item, index) => {
         if (item.name === name) {
-          context.state.app.pageOpenedList.splice(index, 1);
+          context.state.app.pages.splice(index, 1);
         }
       });
       // 保存已经打开的页面列表
-      localStorage.pageOpenedList = JSON.stringify(context.state.app.pageOpenedList);
+      localStorage.framework_pages = JSON.stringify(context.state.app.pages);
       let lastPageName = '';
-      if (context.state.app.pageOpenedList.length > 1) {
-        lastPageName = context.state.app.pageOpenedList[context.state.app.pageOpenedList.length-1].name;
+      if (context.state.app.pages.length > 1) {
+        lastPageName = context.state.app.pages[context.state.app.pages.length - 1].name;
       } else {
-        lastPageName = context.state.app.pageOpenedList[0].name;
+        lastPageName = context.state.app.pages[0].name;
       }
 
-      context.state.app.cachePage.forEach((item, index) => {
+      context.state.app.caches.forEach((item, index) => {
         if (item === name) {
-          context.state.app.cachePage.splice(index, 1);
+          context.state.app.caches.splice(index, 1);
         }
       });
       context.state._router.push({ name: lastPageName });
