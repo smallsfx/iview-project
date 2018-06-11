@@ -26,6 +26,9 @@
         <span @click="handleCreate">
           <Button type="dashed" icon="search">新增</Button>
         </span>
+        <span @click="handleRemove">
+          <Button type="dashed" icon="trash-a">删除</Button>
+        </span>
       </Row>
       <Row class="margin-top-10">
         <Table :loading="table.loading" ref="selection" :columns="table.columns" :data="table.data" stripe></Table>
@@ -46,16 +49,6 @@ const CONST_DICT_STATUS = {
   "1": "启用",
   "0": "禁用"
 };
-
-const CONST_FILTER = (() => {
-  return {
-    userName: "",
-    nickName: "",
-    status: "",
-    beginCreateTime: "", //创建时间范围最小值
-    endCreateTime: "" //创建时间范围最大值
-  };
-})();
 
 export default {
   extends: ViewBase,
@@ -103,7 +96,7 @@ export default {
         { key: "remark", title: "描述", width: 150, ellipsis: true },
         Util.generator.createDateColumn('createTime','创建时间'),
         Util.generator.createDateColumn('lastModifyTime','最后修改时间'),
-        Util.generator.createActionColumn('操作',150,(params)=>{
+        Util.generator.createActionColumn('操作',(params)=>{
           return [
             { text:'编辑',click:()=>{ this.$router.push({name: "user-update",params: { id: params.row.id }}); } }
           ];
@@ -112,13 +105,24 @@ export default {
       // 为ViewBase设置查询API
       this.table.api = Config.api.user.query;
       // 为ViewBase设置查询条件定义
-      this.table.filter = CONST_FILTER;
+      this.table.filter = {
+        userName: "",
+        nickName: "",
+        status: "",
+        beginCreateTime: "", //创建时间范围最小值
+        endCreateTime: "" //创建时间范围最大值
+      };
       // 调用ViewBase.search方法，执行数据查询
       this.search();
     },
 
     handleCreate() {
       this.$router.push({ name: "user-create" });
+    },
+
+    handleRemove(){
+      let selecteds = this.$refs.selection.getSelection();
+      
     }
   }
 };

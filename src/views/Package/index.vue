@@ -69,7 +69,7 @@ export default {
           }
         },
         { key: "desc", title: "描述" },
-        Util.generator.createActionColumn('操作',150,(params)=>{
+        Util.generator.createActionColumn('操作',(params)=>{
           return [
             { text:'编辑',click:()=>{ this.$router.push({name: "package-update",params: { id: params.row.id }}); } }
           ];

@@ -54,7 +54,7 @@ export default {
         { key: "discount", title: "折扣率"},
         Util.generator.createDateColumn('createTime','创建时间'),
         Util.generator.createDateColumn('lastModifyTime','最后修改时间'),
-        Util.generator.createActionColumn('操作',150,(params)=>{
+        Util.generator.createActionColumn('操作',(params)=>{
           return [
             { text:'编辑',click:()=>{ this.$router.push({name: "whitelist-update",params: { id: params.row.id }}); } }
           ];

@@ -13,20 +13,20 @@ export default {
    * @return {JSON} iView table标准column参数
    */
   createDateColumn: (key, title, width) => {
-    return { 
-      key:key,
-      title:title,
-      width:width|| 150,
-      render: function(h, params) {
-        return h("div",utcToString(params.row[key], "yyyy-MM-dd hh:mm:ss"));
+    return {
+      key: key,
+      title: title,
+      width: width || 150,
+      render: function (h, params) {
+        return h("div", utcToString(params.row[key], "yyyy-MM-dd hh:mm:ss"));
       }
     }
   },
   /**
    * 创建包含功能按钮的列（iView Table Column)
    * @param {string} title 列标题
-   * @param {number} width [可选] 列宽度，默认为150 
    * @param {function} actions 返回功能按钮定义
+   * @param {number} width [可选] 列宽度，默认为150 
    * @return {JSON} iView table标准column参数
    * @example actions 参数示例：
    * 01:(params)=>
@@ -41,21 +41,38 @@ export default {
    * 10:   ];
    * 11:}
    */
-  createActionColumn: (title, width, actions)=> {
-    const parseActions = (h,params)=>{
+  createActionColumn: (title, actions, width) => {
+    const parseActions = (h, params) => {
       let _actions = actions(params);
-      let buttons=[];
-      _actions.forEach(action=>{
-          buttons.push(h('Button', {props: {type: 'text',size: 'small'},on:{click:action.click}}, action.text));
-        });
-      return h('div',buttons);
+      let buttons = [];
+      _actions.forEach(action => {
+        buttons.push(h('Button', { props: { type: 'text', size: 'small' }, on: { click: action.click } }, action.text));
+      });
+      return h('div', buttons);
     }
     return {
-      title:title,
+      title: title,
       key: "show_more",
       align: "center",
-      width: 150,
+      width: width || 150,
       render: parseActions
+    }
+  },
+
+  /**
+   * 创建自带格式化功能的列（iView Table Column)
+   * @param {string} title 列标题
+   * @param {function} formatfn 格式化方法，返回文本内容
+   * @param {number} width [可选] 列宽度，默认为150 
+   * @return {JSON} iView table标准column参数
+   */
+  createFormatColumn: (title, formatfn, width) => {
+    return {
+      title: title,
+      key: "show_more",
+      align: "center",
+      width: width || 150,
+      render: (h, params) => { return h('span', formatfn(params)); }
     }
   }
 }

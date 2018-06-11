@@ -120,7 +120,7 @@ export default {
             if (config.env.indexOf('dev') > -1) {
                 stylePath = './src/views/Main/components/theme-switch/theme/';
             } else {
-                stylePath = 'dist/themes/';
+                stylePath = 'css/themes/';
             }
             if (mainTheme !== 'b') {
                 path = stylePath + mainTheme + '.css';
@@ -136,7 +136,7 @@ export default {
         if (config.env.indexOf('dev') > -1) {
             path = './src/views/Main/components/theme-switch/theme/';
         } else {
-            path = 'dist/themes/';
+            path = 'css/themes/';
         }
         if (localStorage.theme) {
             let hasThisUser = JSON.parse(localStorage.theme).some(item => {

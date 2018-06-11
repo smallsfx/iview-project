@@ -14,7 +14,7 @@ module.exports = {
     'vender-exten': '@/vendors/vendors.exten.js'
   },
   output: {
-    path: path.resolve(__dirname, '../dist/dist')
+    path: path.resolve(__dirname, '../dist')
   },
   module: {
     rules: [
@@ -62,14 +62,6 @@ module.exports = {
         }),
       },
       {
-        test: /\.(woff|svg|eot|ttf)\??.*$/,
-        loader: 'url-loader?name=fonts/[name].[ext]'
-      },
-      {
-        test: /\.(gif|jpg|png)\??.*$/,
-        loader: 'url-loader?name=imgs/[name].[ext]'
-      },
-      {
         test: /\.(html|tpl)$/,
         loader: 'html-loader'
       }
@@ -77,8 +69,7 @@ module.exports = {
   },
   plugins: [
     new HappyPack({ id: 'happybabel', loaders: ['babel-loader'], threadPool: happyThreadPool, verbose: true }),
-    new webpack.BannerPlugin('smallsfx<admin_small@163.com> copyright 2018!'),
-    // new webpack.IgnorePlugin(/theme\//)
+    new webpack.BannerPlugin('smallsfx<admin_small@163.com> copyright 2018!')
   ],
   resolve: {
     extensions: ['.js', '.vue'],

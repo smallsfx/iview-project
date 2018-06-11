@@ -130,14 +130,7 @@ export default {
         },
         { key: "content", title: "日志内容", width: 300, ellipsis: true },
         { key: "operator", title: "操作员账号", width: 150 },
-        {
-          key: "createTime",
-          title: "操作时间",
-          width: 150,
-          render: function(h, params) {
-            return h("span",util.utcToString(this.row.createTime,"yyyy-MM-dd hh:mm:ss"));
-          }
-        },
+        util.generator.createDateColumn('createTime','操作时间'),
         { key: "ipAddress", title: "登录IP", width: 150 },
         { key: "remark", title: "附加信息", width: 150, ellipsis: true }
       ];
